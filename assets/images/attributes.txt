@@ -1,0 +1,11 @@
+Wallet
+<a href="https://www.flaticon.com/free-icons/wallet" title="wallet icons">Wallet icons created by Freepik - Flaticon</a>
+
+Google Icon
+<a href="https://www.flaticon.com/free-icons/google" title="google icons">Google icons created by Freepik - Flaticon</a>
+
+Facebook Icon
+<a href="https://www.flaticon.com/free-icons/facebook" title="facebook icons">Facebook icons created by Freepik - Flaticon</a>
+
+Card Logo
+https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/default-project-widgets-xzsp5v/assets/ddr0sc80h0hs/@3xlogoMark_outline.png

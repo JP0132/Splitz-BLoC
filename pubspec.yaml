@@ -1,0 +1,59 @@
+name: splitz_bloc
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.1 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  lottie: ^3.1.2
+  smooth_page_indicator: ^1.1.0
+  intl: ^0.19.0
+  font_awesome_flutter: ^10.7.0
+  flutter_bloc: ^8.1.6
+  firebase_core: ^3.1.1
+  firebase_auth: ^5.1.1
+  cloud_firestore: ^5.1.0
+  equatable: ^2.0.5
+  google_sign_in: ^6.2.1
+  flutter_slidable: ^3.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # To add assets
+  assets:
+    # Logos
+    - assets/images/logo/darkLogo.png
+    - assets/images/logo/lightLogo.png
+
+    # Onboard
+    - assets/images/onboarding/CollectingMoney.json
+    - assets/images/onboarding/share.json
+    - assets/images/onboarding/TrackExpensives.json
+
+    # Icons
+    - assets/images/icons/facebook.png
+    - assets/images/icons/google.png
+    - assets/images/icons/card.png
+
+  # Custom fonts
+  fonts:
+    - family: JetBrains Mono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Bold.ttf
+          weight: 700
+
+    - family: AntonSC
+      fonts:
+        - asset: assets/fonts/AntonSC/AntonSC-Regular.ttf
