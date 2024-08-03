@@ -28,8 +28,9 @@ class FetchExpensesRequested extends ExpenseEvent {
 
 class DeleteExpenseRequested extends ExpenseEvent {
   final String expenseId;
+  final String splitId;
 
-  const DeleteExpenseRequested(this.expenseId);
+  const DeleteExpenseRequested(this.expenseId, this.splitId);
 
   @override
   List<Object?> get props => [expenseId];

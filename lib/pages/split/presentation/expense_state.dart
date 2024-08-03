@@ -25,7 +25,14 @@ class ExpenseFailure extends ExpenseState {
 
 class ExpenseAdded extends ExpenseState {}
 
-class ExpenseDeleted extends ExpenseState {}
+class ExpenseDeleted extends ExpenseState {
+  final List<ExpenseModel> expenses;
+
+  const ExpenseDeleted(this.expenses);
+
+  @override
+  List<Object?> get props => [expenses];
+}
 
 class ExpensesLoaded extends ExpenseState {
   final List<ExpenseModel> expenses;

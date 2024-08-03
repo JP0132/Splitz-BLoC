@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomTagField extends StatefulWidget {
   final Function(List<String>) onTagsChanged;
-  const CustomTagField({super.key, required this.onTagsChanged});
+  final List<String> addedTags;
+  const CustomTagField(
+      {super.key, required this.onTagsChanged, this.addedTags = const []});
 
   @override
   State<CustomTagField> createState() => _CustomTagFieldState();
@@ -10,7 +12,14 @@ class CustomTagField extends StatefulWidget {
 
 class _CustomTagFieldState extends State<CustomTagField> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _tags = [];
+  late List<String> _tags;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize _tags with the provided addedTags
+    _tags = List.from(widget.addedTags);
+  }
 
   void _addTag(String tag) {
     if (tag.isNotEmpty) {

@@ -25,6 +25,8 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       await addExpenseUseCase(event.expense);
       add(FetchExpensesRequested(event.expense.splitId));
       emit(ExpenseAdded());
+      // final expenses = await getExpensesforSplitUseCase(event.splitId);
+      // emit(ExpensesLoaded(expenses));
     } catch (e) {
       emit(ExpenseError(e.toString()));
     }
@@ -46,7 +48,8 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     emit(ExpenseLoading());
     try {
       await deleteExpenseUseCase(event.expenseId);
-      emit(ExpenseDeleted());
+      final expenses = await getExpensesforSplitUseCase(event.splitId);
+      emit(ExpensesLoaded(expenses));
     } catch (e) {
       emit(ExpenseError(e.toString()));
     }
