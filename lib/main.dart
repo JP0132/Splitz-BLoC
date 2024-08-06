@@ -1,33 +1,45 @@
+// Firebsase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+// Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:splitz_bloc/navigation/bottom_nav_bar.dart';
-import 'package:splitz_bloc/navigation/navigation_bloc.dart';
-import 'package:splitz_bloc/pages/authentication/data/repositories/auth_repository_impl.dart';
-import 'package:splitz_bloc/pages/authentication/domain/usecases/get_current_user_usecase.dart';
-import 'package:splitz_bloc/pages/authentication/domain/usecases/google_sign_in_usecase.dart';
-import 'package:splitz_bloc/pages/authentication/domain/usecases/sign_up_usecase.dart';
-import 'package:splitz_bloc/pages/authentication/presentation/auth_bloc.dart';
-import 'package:splitz_bloc/pages/authentication/presentation/auth_event.dart';
-import 'package:splitz_bloc/pages/authentication/presentation/login_page.dart';
-import 'package:splitz_bloc/pages/authentication/presentation/sign_up_page.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:splitz_bloc/pages/onboarding/on_boarding_page.dart';
-import 'package:splitz_bloc/pages/splash/splash_page.dart';
-import 'package:splitz_bloc/pages/split/data/repositories/expense_repository.dart';
-import 'package:splitz_bloc/pages/split/data/repositories/split_repository_impl.dart';
-import 'package:splitz_bloc/pages/split/domain/usecases/AddExpenseUseCase.dart';
-import 'package:splitz_bloc/pages/split/domain/usecases/CreateSplitUseCase.dart';
-import 'package:splitz_bloc/pages/split/domain/usecases/DeleteExpenseUseCase.dart';
-import 'package:splitz_bloc/pages/split/domain/usecases/GetAllSplitsUseCase.dart';
-import 'package:splitz_bloc/pages/split/domain/usecases/GetExpensesForSplitUseCase.dart';
-import 'package:splitz_bloc/pages/split/presentation/create_new_split.dart';
-import 'package:splitz_bloc/pages/split/presentation/expense_bloc.dart';
-import 'package:splitz_bloc/pages/split/presentation/split_bloc.dart';
+
+// Pages
+import 'package:splitz_bloc/presentation/navigation/bottom_nav_bar.dart';
+import 'package:splitz_bloc/presentation/authentication/login_page.dart';
+import 'package:splitz_bloc/presentation/authentication/sign_up_page.dart';
+import 'package:splitz_bloc/presentation/onboarding/on_boarding_page.dart';
+import 'package:splitz_bloc/presentation/splash/splash_page.dart';
+
+// Bloc
+import 'package:splitz_bloc/presentation/authentication/auth_bloc.dart';
+import 'package:splitz_bloc/presentation/authentication/auth_event.dart';
+import 'package:splitz_bloc/presentation/navigation/navigation_bloc.dart';
+import 'package:splitz_bloc/presentation/split/create_new_split.dart';
+import 'package:splitz_bloc/presentation/split/expense_bloc.dart';
+import 'package:splitz_bloc/presentation/split/split_bloc.dart';
+
+// Usecases
+import 'package:splitz_bloc/domain/usecases/get_current_user_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/google_sign_in_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/sign_up_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/add_expense_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/create_split_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/delete_expense_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/get_all_splits_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/get_expenses_for_split_usecase.dart';
+
+// Repositories
+import 'package:splitz_bloc/data/repositories/auth_repository_impl.dart';
+import 'package:splitz_bloc/data/repositories/expense_repository_impl.dart';
+import 'package:splitz_bloc/data/repositories/split_repository_impl.dart';
+
 import 'package:splitz_bloc/utils/themes/theme.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
