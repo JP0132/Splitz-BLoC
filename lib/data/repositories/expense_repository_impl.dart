@@ -39,4 +39,26 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   Future<void> deleteExpense(String expenseId) async {
     await firestore.collection('expenses').doc(expenseId).delete();
   }
+
+  @override
+  Future<void> editExpense(ExpenseModel expense) async {
+    try {
+      // Retrieve the document reference for the expense
+      final snapshot = await firestore
+          .collection('expenses')
+          .where('id', isEqualTo: expense.id)
+          .get();
+
+      // Check if the document exists
+      if (snapshot.docs.isNotEmpty) {
+        final doc = snapshot.docs.first;
+        await doc.reference.update(expense.toMap());
+      } else {
+        throw Exception('Expense not found');
+      }
+    } catch (e) {
+      // Handle any errors that might occur
+      throw Exception('Failed to update expense: $e');
+    }
+  }
 }

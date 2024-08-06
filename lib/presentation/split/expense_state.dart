@@ -25,6 +25,8 @@ class ExpenseFailure extends ExpenseState {
 
 class ExpenseAdded extends ExpenseState {}
 
+class ExpenseEdited extends ExpenseState {}
+
 class ExpenseDeleted extends ExpenseState {
   final List<ExpenseModel> expenses;
 

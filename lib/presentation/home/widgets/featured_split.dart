@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/constants/images.dart';
+import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
 class FeaturedSplit extends StatefulWidget {
-  final String totalSpent;
-  final String dateCreated;
-  final String listName;
-  final Gradient colour;
+  final SplitModel splitDetails;
+
   const FeaturedSplit({
     super.key,
-    required this.totalSpent,
-    required this.dateCreated,
-    required this.listName,
-    required this.colour,
+    required this.splitDetails,
   });
 
   @override
@@ -22,6 +19,8 @@ class FeaturedSplit extends StatefulWidget {
 class _FeaturedSplitState extends State<FeaturedSplit> {
   @override
   Widget build(BuildContext context) {
+    Gradient cardColour =
+        Helperfunctions.getColourByName(widget.splitDetails.colour);
     return GestureDetector(
       onTap: () {},
       child: Padding(
@@ -40,7 +39,7 @@ class _FeaturedSplitState extends State<FeaturedSplit> {
                 ),
               )
             ],
-            gradient: widget.colour,
+            gradient: cardColour,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Padding(
@@ -61,7 +60,7 @@ class _FeaturedSplitState extends State<FeaturedSplit> {
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  widget.totalSpent,
+                  "${Helperfunctions.getCurrencyFormat(widget.splitDetails.currency)}${widget.splitDetails.totalAmount}",
                   style: TextStyle(color: Colors.white),
                 ),
                 Padding(
@@ -71,11 +70,12 @@ class _FeaturedSplitState extends State<FeaturedSplit> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.listName,
+                        widget.splitDetails.name,
                         style: TextStyle(color: Colors.white),
                       ),
                       Text(
-                        widget.dateCreated,
+                        Helperfunctions.getDateFormat(
+                            widget.splitDetails.dateTime),
                         style: TextStyle(color: Colors.white),
                       ),
                     ],

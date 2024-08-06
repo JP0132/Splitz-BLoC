@@ -50,11 +50,7 @@ class _SplitPageState extends State<SplitPage> {
             Padding(
               padding: const EdgeInsets.only(top: 0, right: 0, left: 15),
               child: FeaturedSplit(
-                totalSpent: formattedAmount,
-                dateCreated: formattedDate,
-                listName: widget.splitDetails.name,
-                colour:
-                    Helperfunctions.getColourByName(widget.splitDetails.colour),
+                splitDetails: widget.splitDetails,
               ),
             ),
             const SizedBox(

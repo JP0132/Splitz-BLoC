@@ -47,6 +47,10 @@ class _EditExpenseState extends State<EditExpense> {
     costController =
         TextEditingController(text: widget.expenseDetails.cost.toString());
     notesController = TextEditingController(text: widget.expenseDetails.notes);
+    selectedType = widget.expenseDetails.type;
+    selectedCurrency = widget.expenseDetails.currency;
+    selectedDate = widget.expenseDetails.dateTime;
+    addedTags = widget.expenseDetails.tags;
   }
 
   @override
@@ -78,6 +82,7 @@ class _EditExpenseState extends State<EditExpense> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           children: [
             const Column(
@@ -88,6 +93,7 @@ class _EditExpenseState extends State<EditExpense> {
                 ),
                 Text(
                   "Edit the Expense",
+                  style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(
                   height: 16,
@@ -106,12 +112,14 @@ class _EditExpenseState extends State<EditExpense> {
                 ),
                 CustomDatePicker(
                   onDateChanged: handleDateChanged,
+                  dateToEdit: widget.expenseDetails.dateTime,
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 Customdropdown(
                   dropListName: "Currency",
+                  selectedValue: widget.expenseDetails.currency,
                   values: CustomValues.currencies,
                   onValueChanged: (value) {
                     setState(() {
@@ -142,6 +150,7 @@ class _EditExpenseState extends State<EditExpense> {
                 ),
                 Customdropdown(
                   dropListName: "Type",
+                  selectedValue: widget.expenseDetails.type,
                   values: CustomValues.types,
                   onValueChanged: (value) {
                     setState(() {
@@ -169,16 +178,16 @@ class _EditExpenseState extends State<EditExpense> {
                 ),
                 BlocConsumer<ExpenseBloc, ExpenseState>(
                   listener: (context, state) {
-                    if (state is ExpenseAdded) {
+                    if (state is ExpenseEdited) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Expense added successfully!'),
+                        content: Text('Expense edited successfully!'),
                         backgroundColor: CustomColours.darkSuccess,
                       ));
                       Navigator.pop(context);
                     } else if (state is ExpenseFailure) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:
-                            Text('Failed to create split: ${state.message}'),
+                            Text('Failed to edit expense: ${state.message}'),
                         backgroundColor: CustomColours.darkError,
                       ));
                     }
@@ -188,7 +197,7 @@ class _EditExpenseState extends State<EditExpense> {
                       return const CircularProgressIndicator();
                     }
                     return AuthButton(
-                      text: "Add Expense",
+                      text: "Edit Expense",
                       operation: () {
                         final name = nameController.text;
                         final cost = costController.text;
@@ -198,10 +207,8 @@ class _EditExpenseState extends State<EditExpense> {
                         if (name.isNotEmpty &&
                             cost.isNotEmpty &&
                             paid.isNotEmpty &&
-                            notes.isNotEmpty &&
                             selectedType != "" &&
-                            selectedCurrency != "" &&
-                            addedTags.isNotEmpty) {
+                            selectedCurrency != "") {
                           ExpenseModel expenseModel = ExpenseModel(
                             name: name,
                             cost: double.parse(cost),
@@ -210,14 +217,14 @@ class _EditExpenseState extends State<EditExpense> {
                             tags: addedTags,
                             type: selectedType,
                             currency: selectedCurrency,
-                            id: '',
-                            splitId: widget.expenseDetails.id,
+                            id: widget.expenseDetails.id,
+                            splitId: widget.expenseDetails.splitId,
                             dateTime: selectedDate,
                           );
 
                           context
                               .read<ExpenseBloc>()
-                              .add(AddExpenseRequested(expenseModel));
+                              .add(EditExpenseRequested(expenseModel));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

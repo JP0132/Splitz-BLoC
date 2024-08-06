@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/models/split_details.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_bloc.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_state.dart';
@@ -28,54 +29,19 @@ class _HomePageState extends State<HomePage> {
     final bool isDark = Helperfunctions.isDarkMode(context);
     context.read<SplitBloc>().add(FetchAllSplitRequested());
 
-    SplitDetails newCardData = SplitDetails(
+    SplitModel newCardData = SplitModel(
+      id: "1",
+      userId: "2",
       totalAmount: 7454.0,
-      createdAt: DateTime.now(),
+      dateTime: DateTime.now(),
       name: "Portugal Holiday",
-      colour: 'red',
+      colour: 'Red',
       category: 'Holiday',
+      currency: "EUR",
     );
 
-    String formattedDate = Helperfunctions.getDateFormat(newCardData.createdAt);
+    String formattedDate = Helperfunctions.getDateFormat(newCardData.dateTime);
     String formattedAmount = "\$${newCardData.totalAmount.toString()}";
-
-    List<SplitDetails> cardItemsData = [
-      SplitDetails(
-        totalAmount: 5654.0,
-        createdAt: DateTime.now(),
-        name: "Holiday 1",
-        colour: 'red',
-        category: 'Holiday',
-      ),
-      SplitDetails(
-        totalAmount: 464.0,
-        createdAt: DateTime.now(),
-        name: "Shopping Trip 2",
-        colour: 'red',
-        category: 'Holiday',
-      ),
-      SplitDetails(
-        totalAmount: 464.0,
-        createdAt: DateTime.now(),
-        name: "Shopping Trip 2",
-        colour: 'red',
-        category: 'Holiday',
-      ),
-      SplitDetails(
-        totalAmount: 464.0,
-        createdAt: DateTime.now(),
-        name: "Shopping Trip 2",
-        colour: 'red',
-        category: 'Holiday',
-      ),
-      SplitDetails(
-        totalAmount: 464.0,
-        createdAt: DateTime.now(),
-        name: "Shopping Trip 2",
-        colour: 'red',
-        category: 'Holiday',
-      ),
-    ];
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -183,10 +149,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(
                             top: 100.0, right: 8, left: 8),
                         child: FeaturedSplit(
-                          totalSpent: formattedAmount,
-                          dateCreated: formattedDate,
-                          listName: newCardData.name,
-                          colour: CustomColours.purpleGradient,
+                          splitDetails: newCardData,
                         ),
                       ),
                       Positioned(

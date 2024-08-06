@@ -51,6 +51,19 @@ class Helperfunctions {
     return DateFormat('yyyy-MM-dd').format(currentDate);
   }
 
+  static String getCurrencyFormat(String currency) {
+    for (var item in CustomValues.currencies) {
+      if (item.name == currency) {
+        if (item.symbol == "\$") {
+          return "\$";
+        } else {
+          return item.symbol;
+        }
+      }
+    }
+    return "";
+  }
+
   static IconData? getIconByName(String name) {
     for (var item in CustomValues.iconList) {
       if (item.name == name) {

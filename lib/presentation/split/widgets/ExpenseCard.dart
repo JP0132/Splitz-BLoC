@@ -31,7 +31,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
       child: Slidable(
         key: Key(expenseID),
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
           children: [
             SlidableAction(
               onPressed: (context) {
@@ -113,11 +113,11 @@ class _ExpenseCardState extends State<ExpenseCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Cost: \$${widget.expenseDetails.cost}',
+                      'Cost: ${Helperfunctions.getCurrencyFormat(widget.expenseDetails.currency)}${widget.expenseDetails.cost}',
                       style: TextStyle(),
                     ),
                     Text(
-                      'Paid: \$${widget.expenseDetails.paid}',
+                      'Paid: ${Helperfunctions.getCurrencyFormat(widget.expenseDetails.currency)}${widget.expenseDetails.paid}',
                       style: TextStyle(
                         color: Colors.white,
                       ),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:splitz_bloc/domain/usecases/edit_expense_usecase.dart';
 import 'firebase_options.dart';
 
 // Flutter
@@ -71,6 +72,7 @@ Future<void> main() async {
   final getExpensesforSplitUseCase =
       GetExpensesforSplitUseCase(expenseRepository);
   final deleteExpenseUseCase = DeleteExpenseUseCase(expenseRepository);
+  final editExpenseUseCase = EditExpenseUsecase(expenseRepository);
 
   runApp(MainApp(
     signUpUseCase: signUpUseCase,
@@ -81,6 +83,7 @@ Future<void> main() async {
     addNewExpenseUseCase: addNewExpenseCase,
     getExpensesforSplitUseCase: getExpensesforSplitUseCase,
     deleteExpenseUseCase: deleteExpenseUseCase,
+    editExpenseUseCase: editExpenseUseCase,
   ));
 }
 
@@ -93,6 +96,7 @@ class MainApp extends StatelessWidget {
   final AddExpenseUseCase addNewExpenseUseCase;
   final GetExpensesforSplitUseCase getExpensesforSplitUseCase;
   final DeleteExpenseUseCase deleteExpenseUseCase;
+  final EditExpenseUsecase editExpenseUseCase;
 
   const MainApp({
     super.key,
@@ -104,6 +108,7 @@ class MainApp extends StatelessWidget {
     required this.addNewExpenseUseCase,
     required this.getExpensesforSplitUseCase,
     required this.deleteExpenseUseCase,
+    required this.editExpenseUseCase,
   });
 
   @override
@@ -129,6 +134,7 @@ class MainApp extends StatelessWidget {
                   addNewExpenseUseCase,
                   getExpensesforSplitUseCase,
                   deleteExpenseUseCase,
+                  editExpenseUseCase,
                 ))
       ],
       child: MaterialApp(

@@ -8,12 +8,14 @@ import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 class Customdropdown extends StatefulWidget {
   final String dropListName;
   final List<dynamic> values;
+  final dynamic selectedValue;
   final Function(dynamic) onValueChanged;
   const Customdropdown(
       {super.key,
       required this.dropListName,
       required this.values,
-      required this.onValueChanged});
+      required this.onValueChanged,
+      this.selectedValue});
 
   @override
   State<Customdropdown> createState() => _CustomdropdownState();
@@ -21,6 +23,12 @@ class Customdropdown extends StatefulWidget {
 
 class _CustomdropdownState extends State<Customdropdown> {
   dynamic dropdownValue;
+
+  @override
+  void initState() {
+    dropdownValue = widget.selectedValue;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

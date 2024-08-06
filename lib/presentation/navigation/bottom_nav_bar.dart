@@ -50,7 +50,7 @@ class CustomBottomNavbar extends StatelessWidget {
                       context.read<NavigationBloc>().add(NavigateToAnalytics());
                     },
                     icon: FaIcon(
-                      FontAwesomeIcons.chartLine,
+                      FontAwesomeIcons.alignJustify,
                       color: selectedIndex == 1
                           ? CustomColours.darkPrimary
                           : Colors.grey,
@@ -61,7 +61,7 @@ class CustomBottomNavbar extends StatelessWidget {
                       context.read<NavigationBloc>().add(NavigateToProfile());
                     },
                     icon: FaIcon(
-                      FontAwesomeIcons.user,
+                      FontAwesomeIcons.chartLine,
                       color: selectedIndex == 2
                           ? CustomColours.darkPrimary
                           : Colors.grey,

@@ -5,19 +5,27 @@ import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final Function(DateTime) onDateChanged;
-  const CustomDatePicker({super.key, required this.onDateChanged});
+  final DateTime? dateToEdit;
+  const CustomDatePicker(
+      {super.key, required this.onDateChanged, this.dateToEdit});
 
   @override
   State<CustomDatePicker> createState() => _CustomDatePickerState();
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    selectedDate = widget.dateToEdit ?? DateTime.now();
+    super.initState();
+  }
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
