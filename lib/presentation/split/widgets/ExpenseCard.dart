@@ -47,8 +47,9 @@ class _ExpenseCardState extends State<ExpenseCard> {
             ),
             SlidableAction(
               onPressed: (context) {
-                context.read<ExpenseBloc>().add(DeleteExpenseRequested(
-                    expenseID, widget.expenseDetails.splitId));
+                context
+                    .read<ExpenseBloc>()
+                    .add(DeleteExpenseRequested(widget.expenseDetails));
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text('Expense deleted successfully!'),
                   backgroundColor:

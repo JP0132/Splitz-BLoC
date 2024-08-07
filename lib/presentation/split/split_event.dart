@@ -24,3 +24,12 @@ class CreateSplitRequested extends SplitEvent {
 }
 
 class FetchAllSplitRequested extends SplitEvent {}
+
+class UpdateSplitTotal extends SplitEvent {
+  final double totalAmount;
+
+  const UpdateSplitTotal({required this.totalAmount});
+
+  @override
+  List<Object> get props => [totalAmount];
+}

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
+import 'package:splitz_bloc/data/models/user_model.dart';
+import 'package:splitz_bloc/domain/entities/user.dart';
 import 'package:splitz_bloc/models/split_details.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_bloc.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_state.dart';
@@ -24,10 +26,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<SplitBloc>().add(FetchAllSplitRequested());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDark = Helperfunctions.isDarkMode(context);
-    context.read<SplitBloc>().add(FetchAllSplitRequested());
 
     SplitModel newCardData = SplitModel(
       id: "1",
@@ -39,9 +53,6 @@ class _HomePageState extends State<HomePage> {
       category: 'Holiday',
       currency: "EUR",
     );
-
-    String formattedDate = Helperfunctions.getDateFormat(newCardData.dateTime);
-    String formattedAmount = "\$${newCardData.totalAmount.toString()}";
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -58,10 +69,13 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } else if (state is AuthUserLoaded) {
-            final user = state.user;
-            if (user != null) {
-              String firstInitial = user.firstName[0];
-              String lastInitial = user.surname[0];
+            _user = state.user;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {});
+            });
+            if (_user != null) {
+              String firstInitial = _user!.firstName[0];
+              String lastInitial = _user!.surname[0];
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
@@ -88,13 +102,13 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
                       SizedBox(width: 8.0),
                       Text(
-                        'WELCOME BACK',
+                        'WELCOME BACK ${_user?.firstName.toUpperCase() ?? "FIRSTNAME"}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,

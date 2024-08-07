@@ -14,12 +14,28 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
     final user = auth.currentUser;
     if (user == null) throw Exception('User not authenticated');
 
-    final docRef = firestore.collection('expenses').doc();
+    final expenseRef = firestore.collection('expenses').doc();
+    final splitRef = firestore.collection('splits').doc(expense.splitId);
+
+    await firestore.runTransaction((transaction) async {
+      final splitSnapshot = await transaction.get(splitRef);
+
+      if (!splitSnapshot.exists) {
+        throw Exception('Split does not exist!');
+      }
+
+      final newTotalAmount =
+          (splitSnapshot.data()?['totalAmount'] ?? 0) + expense.paid;
+      // transaction.set(expenseRef, expense.toMap());
+      transaction.update(splitRef, {'totalAmount': newTotalAmount});
+    });
+
+    // final docRef = firestore.collection('expenses').doc();
     final newExpense = expense.copyWith(
-      id: docRef.id,
+      id: expenseRef.id,
     );
 
-    await docRef.set(newExpense.toMap());
+    await expenseRef.set(newExpense.toMap());
   }
 
   @override
@@ -36,14 +52,32 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   }
 
   @override
-  Future<void> deleteExpense(String expenseId) async {
-    await firestore.collection('expenses').doc(expenseId).delete();
+  Future<void> deleteExpense(ExpenseModel expense) async {
+    final expenseRef = firestore.collection('expenses').doc(expense.id);
+    final splitRef = firestore.collection('splits').doc(expense.splitId);
+
+    await firestore.runTransaction((transaction) async {
+      final splitSnapshot = await transaction.get(splitRef);
+
+      if (!splitSnapshot.exists) {
+        throw Exception('Split does not exist!');
+      }
+
+      final newTotalAmount =
+          (splitSnapshot.data()?['totalAmount'] ?? 0) - expense.paid;
+      //transaction.delete(expenseRef, expense.id)
+      transaction.update(splitRef, {'totalAmount': newTotalAmount});
+    });
+
+    await expenseRef.delete();
+    //await firestore.collection('expenses').doc(expense.id).delete();
   }
 
   @override
   Future<void> editExpense(ExpenseModel expense) async {
+    // Retrieve the document reference for the expense and split
+
     try {
-      // Retrieve the document reference for the expense
       final snapshot = await firestore
           .collection('expenses')
           .where('id', isEqualTo: expense.id)

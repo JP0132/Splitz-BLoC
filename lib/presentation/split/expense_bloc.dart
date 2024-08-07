@@ -48,12 +48,12 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     }
   }
 
-  void _onDeleteExpenseRequested(
+  FutureOr<void> _onDeleteExpenseRequested(
       DeleteExpenseRequested event, Emitter<ExpenseState> emit) async {
     emit(ExpenseLoading());
     try {
-      await deleteExpenseUseCase(event.expenseId);
-      final expenses = await getExpensesforSplitUseCase(event.splitId);
+      await deleteExpenseUseCase(event.expense);
+      final expenses = await getExpensesforSplitUseCase(event.expense.splitId);
       emit(ExpensesLoaded(expenses));
     } catch (e) {
       emit(ExpenseError(e.toString()));

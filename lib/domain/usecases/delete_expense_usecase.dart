@@ -1,3 +1,4 @@
+import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/domain/repository/expense_repository.dart';
 
 class DeleteExpenseUseCase {
@@ -5,7 +6,7 @@ class DeleteExpenseUseCase {
 
   DeleteExpenseUseCase(this.repository);
 
-  Future<void> call(String expenseId) async {
-    await repository.deleteExpense(expenseId);
+  Future<void> call(ExpenseModel expense) async {
+    await repository.deleteExpense(expense);
   }
 }

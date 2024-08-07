@@ -6,6 +6,7 @@ import 'package:splitz_bloc/presentation/navigation/navigation_bloc.dart';
 import 'package:splitz_bloc/presentation/navigation/navigation_event.dart';
 import 'package:splitz_bloc/presentation/navigation/navigation_state.dart';
 import 'package:splitz_bloc/presentation/home/home_page.dart';
+import 'package:splitz_bloc/presentation/split/split_nav_page.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 
 class CustomBottomNavbar extends StatelessWidget {
@@ -48,7 +49,7 @@ class CustomBottomNavbar extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      context.read<NavigationBloc>().add(NavigateToAnalytics());
+                      context.read<NavigationBloc>().add(NavigateToSplits());
                     },
                     icon: FaIcon(
                       FontAwesomeIcons.alignJustify,
@@ -59,7 +60,7 @@ class CustomBottomNavbar extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      context.read<NavigationBloc>().add(NavigateToProfile());
+                      context.read<NavigationBloc>().add(NavigateToAnalytics());
                     },
                     icon: FaIcon(
                       FontAwesomeIcons.chartLine,
@@ -88,9 +89,9 @@ class CustomBottomNavbar extends StatelessWidget {
           builder: (context, state) {
             if (state is HomeState) {
               return const HomePage();
+            } else if (state is SplitNavState) {
+              return const SplitNavPage();
             } else if (state is AnalyticsState) {
-              return Container(color: Colors.blue);
-            } else if (state is ProfileState) {
               return Container(color: Colors.orange);
             } else if (state is SettingsState) {
               return Container(color: Colors.indigo);
@@ -107,9 +108,9 @@ class CustomBottomNavbar extends StatelessWidget {
 int _getSelectedIndex(NavigationState state) {
   if (state is HomeState) {
     return 0;
-  } else if (state is AnalyticsState) {
+  } else if (state is SplitNavState) {
     return 1;
-  } else if (state is ProfileState) {
+  } else if (state is AnalyticsState) {
     return 2;
   } else if (state is SettingsState) {
     return 3;

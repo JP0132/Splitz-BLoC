@@ -30,6 +30,11 @@ class SplitLoaded extends SplitState {
   SplitLoaded(this.splits);
 }
 
+class SplitTotalUpdated extends SplitState {
+  final List<SplitModel> splits;
+  SplitTotalUpdated(this.splits);
+}
+
 class SplitError extends SplitState {
   final String message;
 

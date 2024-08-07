@@ -9,6 +9,8 @@ abstract class NavigationState extends Equatable {
 
 class HomeState extends NavigationState {}
 
+class SplitNavState extends NavigationState {}
+
 class AnalyticsState extends NavigationState {}
 
 class ProfileState extends NavigationState {}
