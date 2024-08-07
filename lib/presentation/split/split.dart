@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/add_new_expense.dart';
@@ -19,20 +20,71 @@ class SplitPage extends StatefulWidget {
 }
 
 class _SplitPageState extends State<SplitPage> {
-  @override
-  Widget build(BuildContext context) {
-    bool isDark = Helperfunctions.isDarkMode(context);
-    String formattedDate =
-        Helperfunctions.getDateFormat(widget.splitDetails.dateTime);
-    String formattedAmount = "\$${widget.splitDetails.totalAmount.toString()}";
+  String _searchQuery = '';
+  List<ExpenseModel> _filteredExpenses = [];
+  List<ExpenseModel> _expenses = [];
+  double _totalSpent = 0.0;
+  final TextEditingController _searchController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
     context
         .read<ExpenseBloc>()
         .add(FetchExpensesRequested(widget.splitDetails.id));
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text;
+      _filterExpenses();
+    });
+  }
+
+  void _filterExpenses() {
+    List<String> searchTerms = _searchQuery
+        .split(',')
+        .map((term) => term.trim().toLowerCase())
+        .toList();
+
+    if (_searchQuery.isEmpty) {
+      _filteredExpenses = _expenses;
+    } else {
+      _filteredExpenses = _expenses.where((expense) {
+        final expenseNameLower = expense.name.toLowerCase();
+        final searchQueryLower = _searchQuery.toLowerCase();
+
+        final tagsLower = expense.tags.map((tag) => tag.toLowerCase()).toList();
+        return searchTerms.any((term) =>
+            expenseNameLower.contains(term) ||
+            tagsLower.any((tag) => tag.contains(term)));
+      }).toList();
+    }
+
+    _calculateTotalSpent();
+  }
+
+  void _calculateTotalSpent() {
+    _totalSpent =
+        _filteredExpenses.fold(0.0, (sum, expense) => sum + expense.paid);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = Helperfunctions.isDarkMode(context);
 
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: CustomColours.darkPrimary,
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -51,6 +103,7 @@ class _SplitPageState extends State<SplitPage> {
               padding: const EdgeInsets.only(top: 0, right: 0, left: 15),
               child: FeaturedSplit(
                 splitDetails: widget.splitDetails,
+                totalAmount: _totalSpent,
               ),
             ),
             const SizedBox(
@@ -58,6 +111,7 @@ class _SplitPageState extends State<SplitPage> {
             ),
             Row(
               children: [
+                // Search bar
                 Expanded(
                   child: Container(
                     height: 40.0,
@@ -67,17 +121,25 @@ class _SplitPageState extends State<SplitPage> {
                           : CustomColours.lightOnSurface.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         children: [
                           Icon(Icons.search, color: Colors.white),
                           SizedBox(width: 8.0),
-                          Text(
-                            'Search',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: const InputDecoration(
+                                  hintText:
+                                      'Search, use commas for multi search',
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(fontSize: 14),
+                                ),
+                                style: TextStyle(fontSize: 14),
+                              ),
                             ),
                           ),
                         ],
@@ -95,19 +157,22 @@ class _SplitPageState extends State<SplitPage> {
                 if (state is ExpenseLoading) {
                   return Center(child: CircularProgressIndicator());
                 } else if (state is ExpensesLoaded) {
-                  final expenses = state.expenses;
-                  if (expenses.isEmpty) {
+                  _expenses = state.expenses;
+                  _filterExpenses();
+
+                  if (_filteredExpenses.isEmpty) {
                     return const Center(child: Text('No expenses available.'));
                   } else {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(
+                          top: 8, right: 8, left: 8, bottom: 100),
                       child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: expenses.length,
+                          itemCount: _filteredExpenses.length,
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            final expense = expenses[index];
+                            final expense = _filteredExpenses[index];
                             return ExpenseCard(
                               expenseDetails: expense,
                             );

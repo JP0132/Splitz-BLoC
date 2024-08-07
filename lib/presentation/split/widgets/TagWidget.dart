@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splitz_bloc/utils/constants/colours.dart';
 
 class TagWidget extends StatelessWidget {
   final String label;
@@ -10,7 +11,7 @@ class TagWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
-        color: Color(0xFFFFA500),
+        color: CustomColours.darkPrimary,
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Text(

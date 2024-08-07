@@ -92,10 +92,10 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.white),
                       SizedBox(width: 8.0),
                       Text(
-                        'Search',
+                        'WELCOME BACK',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -150,6 +150,7 @@ class _HomePageState extends State<HomePage> {
                             top: 100.0, right: 8, left: 8),
                         child: FeaturedSplit(
                           splitDetails: newCardData,
+                          totalAmount: 0,
                         ),
                       ),
                       Positioned(

@@ -23,6 +23,7 @@ class CustomBottomNavbar extends StatelessWidget {
           },
           shape: CircleBorder(),
           child: const Icon(Icons.add),
+          backgroundColor: CustomColours.darkPrimary,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(

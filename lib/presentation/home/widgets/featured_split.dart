@@ -6,10 +6,12 @@ import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
 class FeaturedSplit extends StatefulWidget {
   final SplitModel splitDetails;
+  final double totalAmount;
 
   const FeaturedSplit({
     super.key,
     required this.splitDetails,
+    required this.totalAmount,
   });
 
   @override
@@ -60,8 +62,8 @@ class _FeaturedSplitState extends State<FeaturedSplit> {
                   style: TextStyle(color: Colors.white),
                 ),
                 Text(
-                  "${Helperfunctions.getCurrencyFormat(widget.splitDetails.currency)}${widget.splitDetails.totalAmount}",
-                  style: TextStyle(color: Colors.white),
+                  "${Helperfunctions.getCurrencyFormat(widget.splitDetails.currency)}${widget.totalAmount}",
+                  style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 4),
