@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:splitz_bloc/data/models/favourite_model.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/domain/repository/split_repository.dart';
 
@@ -41,9 +42,31 @@ class SplitRepositoryImpl implements SplitRepository {
   }
 
   @override
-  Future<void> favouriteSplit(String splitId, String userId) {
-    // TODO: implement favouriteSplit
-    throw UnimplementedError();
+  Future<void> favouriteSplit(FavouriteModel favSplit) async {
+    //final expenseRef = firestore.collection('expenses').doc(expense.id);
+
+    // Check if there is an exisiting favourite for this user
+    final existingFav = await firestore
+        .collection("favourites")
+        .where('userId', isEqualTo: favSplit.userId)
+        .get();
+
+    String existingFavId = "";
+    if (existingFav.docs.isNotEmpty) {
+      for (var doc in existingFav.docs) {
+        existingFavId = doc["splitId"];
+        await firestore.collection('favourites').doc(doc.id).delete();
+      }
+    }
+
+    if (existingFavId != favSplit.splitId) {
+      // Create a reference for the new favourite split
+      final favRef = firestore.collection('favourites').doc();
+      final newFavSplit = favSplit.copyWith(
+          id: favRef.id, userId: favSplit.userId, splitId: favSplit.splitId);
+
+      await favRef.set(newFavSplit.toMap());
+    }
   }
 
   @override

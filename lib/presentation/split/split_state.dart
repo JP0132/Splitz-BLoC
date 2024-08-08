@@ -46,3 +46,5 @@ class SplitError extends SplitState {
 
   SplitError(this.message);
 }
+
+class SplitFavourited extends SplitState {}

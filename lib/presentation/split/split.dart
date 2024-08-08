@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
@@ -99,7 +100,14 @@ class _SplitPageState extends State<SplitPage> {
     bool isDark = Helperfunctions.isDarkMode(context);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, true); // Return true to indicate changes
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: CustomColours.darkPrimary,
         onPressed: () => Navigator.push(

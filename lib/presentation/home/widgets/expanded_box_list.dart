@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/split.dart';
+import 'package:splitz_bloc/presentation/split/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/split_event.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/constants/values.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
@@ -78,16 +81,23 @@ class _ExpandedBoxListState extends State<ExpandedBoxList> {
                 itemBuilder: (context, index) {
                   final split = widget.splits[index];
                   return GestureDetector(
-                    onTap: () => Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                SplitPage(splitDetails: split))),
+                          builder: (context) => SplitPage(splitDetails: split),
+                        ),
+                      );
+                      // Reload the splits if the result is true
+                      if (result == true) {
+                        context.read<SplitBloc>().add(FetchAllSplitRequested());
+                      }
+                    },
                     child: ListTile(
                       leading: Container(
                         decoration: BoxDecoration(
                           gradient: getColourByName(split.colour) ??
-                              LinearGradient(
+                              const LinearGradient(
                                 colors: [
                                   Colors.black,
                                   Colors.black,
@@ -97,9 +107,9 @@ class _ExpandedBoxListState extends State<ExpandedBoxList> {
                         ),
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
                           child: Icon(
                               getIconByName(split.category) ?? Icons.error),
-                          foregroundColor: Colors.white,
                         ),
                       ),
                       title: Text(split.name),

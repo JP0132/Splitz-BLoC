@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitz_bloc/domain/usecases/create_split_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/favourite_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_all_splits_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_split_by_id_usecase.dart';
 import 'split_state.dart';
@@ -12,13 +13,15 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   final CreateSplitUseCase createSplitUseCase;
   final GetAllSplitsUseCase getAllSplitsUseCase;
   final GetSplitByIdUsecase getSplitByIdUsecase;
+  final FavouriteSplitUsecase favouriteSplitUsecase;
 
   SplitBloc(this.createSplitUseCase, this.getAllSplitsUseCase,
-      this.getSplitByIdUsecase)
+      this.getSplitByIdUsecase, this.favouriteSplitUsecase)
       : super(SplitInitial()) {
     on<CreateSplitRequested>(_onCreateSplitRequested);
     on<FetchAllSplitRequested>(_onFetchAllSplitsRequested);
     on<FetchSplitByIdRequested>(_onFetchSplitByIdRequested);
+    on<FavouriteSplitRequested>(_onFavouriteSplitRequested);
   }
 
   void _onCreateSplitRequested(
@@ -54,6 +57,17 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
       emit(SplitLoaded(split));
     } catch (e) {
       emit(SplitError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _onFavouriteSplitRequested(
+      FavouriteSplitRequested event, Emitter<SplitState> emit) async {
+    emit(SplitLoading());
+    try {
+      await favouriteSplitUsecase(event.splitId, event.userId);
+      emit(SplitSuccess());
+    } catch (e) {
+      emit(SplitFailure(e.toString()));
     }
   }
 }
