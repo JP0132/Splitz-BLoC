@@ -7,6 +7,7 @@ import 'package:splitz_bloc/domain/usecases/edit_expense_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_expenses_for_split_usecase.dart';
 import 'package:splitz_bloc/presentation/split/expense_event.dart';
 import 'package:splitz_bloc/presentation/split/expense_state.dart';
+import 'package:splitz_bloc/presentation/split/split_event.dart';
 
 class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   final AddExpenseUseCase addExpenseUseCase;

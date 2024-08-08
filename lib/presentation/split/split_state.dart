@@ -24,10 +24,16 @@ class SplitFailure extends SplitState {
 
 class SplitSuccess extends SplitState {}
 
-class SplitLoaded extends SplitState {
+class SplitsLoaded extends SplitState {
   final List<SplitModel> splits;
 
-  SplitLoaded(this.splits);
+  const SplitsLoaded(this.splits);
+}
+
+class SplitLoaded extends SplitState {
+  final SplitModel split;
+
+  const SplitLoaded(this.split);
 }
 
 class SplitTotalUpdated extends SplitState {

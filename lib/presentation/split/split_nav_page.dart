@@ -36,7 +36,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
             builder: (context, state) {
               if (state is SplitLoading) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is SplitLoaded) {
+              } else if (state is SplitsLoaded) {
                 splits = state.splits;
                 if (splits.isEmpty) {
                   return const Center(child: Text('No splits available.'));

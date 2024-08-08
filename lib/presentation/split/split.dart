@@ -23,7 +23,7 @@ class _SplitPageState extends State<SplitPage> {
   String _searchQuery = '';
   List<ExpenseModel> _filteredExpenses = [];
   List<ExpenseModel> _expenses = [];
-  double _totalSpent = 0.0;
+  late double _totalSpent;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -33,6 +33,7 @@ class _SplitPageState extends State<SplitPage> {
         .read<ExpenseBloc>()
         .add(FetchExpensesRequested(widget.splitDetails.id));
     _searchController.addListener(_onSearchChanged);
+    _totalSpent = widget.splitDetails.totalAmount;
   }
 
   void _onSearchChanged() {
@@ -53,7 +54,7 @@ class _SplitPageState extends State<SplitPage> {
     } else {
       _filteredExpenses = _expenses.where((expense) {
         final expenseNameLower = expense.name.toLowerCase();
-        final searchQueryLower = _searchQuery.toLowerCase();
+        // final searchQueryLower = _searchQuery.toLowerCase();
 
         final tagsLower = expense.tags.map((tag) => tag.toLowerCase()).toList();
         return searchTerms.any((term) =>
@@ -61,13 +62,29 @@ class _SplitPageState extends State<SplitPage> {
             tagsLower.any((tag) => tag.contains(term)));
       }).toList();
     }
+    if (_filteredExpenses.isNotEmpty) {
+      _calculateTotalSpent();
+    } else {
+      // Keep the initial total amount if the filter yields no results
+      _totalSpent = widget.splitDetails.totalAmount;
+    }
+  }
 
-    _calculateTotalSpent();
+  void _updateTotalSpent(double newTotal) {
+    // Schedule the setState to happen after the build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _totalSpent = newTotal;
+        });
+      }
+    });
   }
 
   void _calculateTotalSpent() {
     _totalSpent =
         _filteredExpenses.fold(0.0, (sum, expense) => sum + expense.paid);
+    _updateTotalSpent(_totalSpent);
   }
 
   @override
@@ -159,6 +176,8 @@ class _SplitPageState extends State<SplitPage> {
                 } else if (state is ExpensesLoaded) {
                   _expenses = state.expenses;
                   _filterExpenses();
+                  print("ahahahahahahahahahahahahahahah" +
+                      _totalSpent.toString());
 
                   if (_filteredExpenses.isEmpty) {
                     return const Center(child: Text('No expenses available.'));

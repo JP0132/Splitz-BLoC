@@ -33,3 +33,12 @@ class UpdateSplitTotal extends SplitEvent {
   @override
   List<Object> get props => [totalAmount];
 }
+
+class FetchSplitByIdRequested extends SplitEvent {
+  final String splitId;
+
+  const FetchSplitByIdRequested(this.splitId);
+
+  @override
+  List<Object> get props => [splitId];
+}

@@ -39,4 +39,20 @@ class SplitRepositoryImpl implements SplitRepository {
       return SplitModel.fromMap(data);
     }).toList();
   }
+
+  @override
+  Future<void> favouriteSplit(String splitId, String userId) {
+    // TODO: implement favouriteSplit
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<SplitModel> getSplitById(String splitId) async {
+    final splitRef = await firestore.collection("splits").doc(splitId).get();
+
+    SplitModel split =
+        SplitModel.fromMap(splitRef.data() as Map<String, dynamic>);
+
+    return split;
+  }
 }

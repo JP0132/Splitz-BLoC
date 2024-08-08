@@ -202,7 +202,7 @@ class _HomePageState extends State<HomePage> {
               builder: (context, state) {
                 if (state is SplitLoading) {
                   return Center(child: CircularProgressIndicator());
-                } else if (state is SplitLoaded) {
+                } else if (state is SplitsLoaded) {
                   final splits = state.splits;
                   if (splits.isEmpty) {
                     return const Center(child: Text('No splits available.'));
