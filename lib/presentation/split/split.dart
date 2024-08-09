@@ -8,7 +8,7 @@ import 'package:splitz_bloc/presentation/split/add_new_expense.dart';
 import 'package:splitz_bloc/presentation/split/expense_bloc.dart';
 import 'package:splitz_bloc/presentation/split/expense_event.dart';
 import 'package:splitz_bloc/presentation/split/expense_state.dart';
-import 'package:splitz_bloc/presentation/split/widgets/ExpenseCard.dart';
+import 'package:splitz_bloc/presentation/split/widgets/expense_card.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
@@ -184,8 +184,6 @@ class _SplitPageState extends State<SplitPage> {
                 } else if (state is ExpensesLoaded) {
                   _expenses = state.expenses;
                   _filterExpenses();
-                  print("ahahahahahahahahahahahahahahah" +
-                      _totalSpent.toString());
 
                   if (_filteredExpenses.isEmpty) {
                     return const Center(child: Text('No expenses available.'));

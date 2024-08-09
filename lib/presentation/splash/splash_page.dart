@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitz_bloc/presentation/navigation/navigation_bloc.dart';
-import 'package:splitz_bloc/presentation/navigation/navigation_event.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_bloc.dart';
 import 'package:splitz_bloc/presentation/authentication/auth_state.dart';
 import 'package:splitz_bloc/utils/constants/images.dart';
