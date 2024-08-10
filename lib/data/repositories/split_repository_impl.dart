@@ -52,6 +52,8 @@ class SplitRepositoryImpl implements SplitRepository {
         .get();
 
     String existingFavId = "";
+
+    // If there is a favourite already, then delete it
     if (existingFav.docs.isNotEmpty) {
       for (var doc in existingFav.docs) {
         existingFavId = doc["splitId"];
@@ -59,6 +61,8 @@ class SplitRepositoryImpl implements SplitRepository {
       }
     }
 
+    // If the existing fav is equal to the favSplitId then it means the user
+    //is unfavouriting it so no need to add to the collection
     if (existingFavId != favSplit.splitId) {
       // Create a reference for the new favourite split
       final favRef = firestore.collection('favourites').doc();
@@ -77,5 +81,20 @@ class SplitRepositoryImpl implements SplitRepository {
         SplitModel.fromMap(splitRef.data() as Map<String, dynamic>);
 
     return split;
+  }
+
+  @override
+  Future<bool> checkFavouriteStatus(String splitId, String userId) async {
+    final existingFav = await firestore
+        .collection("favourites")
+        .where('userId', isEqualTo: userId)
+        .where('splitId', isEqualTo: splitId)
+        .get();
+
+    if (existingFav.docs.isEmpty) {
+      return false;
+    }
+
+    return true;
   }
 }

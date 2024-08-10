@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/home/widgets/expanded_box_list.dart';
-import 'package:splitz_bloc/presentation/split/split_bloc.dart';
-import 'package:splitz_bloc/presentation/split/split_event.dart';
-import 'package:splitz_bloc/presentation/split/split_state.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 
 class SplitNavPage extends StatefulWidget {

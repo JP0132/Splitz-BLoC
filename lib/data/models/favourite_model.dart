@@ -19,7 +19,7 @@ class FavouriteModel {
     return FavouriteModel(
       id: id ?? this.id,
       userId: userId ?? this.userId,
-      splitId: userId ?? this.splitId,
+      splitId: splitId ?? this.splitId,
     );
   }
 
@@ -34,7 +34,7 @@ class FavouriteModel {
   factory FavouriteModel.fromMap(Map<dynamic, dynamic> map) {
     return FavouriteModel(
       id: map['id'] as String,
-      splitId: map['userId'] as String? ?? "",
+      splitId: map['splitId'] as String? ?? "",
       userId: map['userId'] as String? ?? "",
     );
   }

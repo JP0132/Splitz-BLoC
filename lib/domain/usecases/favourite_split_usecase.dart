@@ -6,7 +6,7 @@ class FavouriteSplitUsecase {
 
   FavouriteSplitUsecase(this.repository);
 
-  Future<void> call(String userId, String splitId) {
+  Future<void> call(String splitId, String userId) {
     final favSplit = FavouriteModel(
       id: '',
       userId: userId,

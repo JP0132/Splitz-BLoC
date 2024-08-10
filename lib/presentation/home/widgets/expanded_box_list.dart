@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/split.dart';
-import 'package:splitz_bloc/presentation/split/split_bloc.dart';
-import 'package:splitz_bloc/presentation/split/split_event.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/constants/values.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
@@ -20,6 +20,21 @@ class ExpandedBoxList extends StatefulWidget {
 
 class _ExpandedBoxListState extends State<ExpandedBoxList> {
   bool _expanded = false;
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   final bool? result = ModalRoute.of(context)?.settings.arguments as bool?;
+  //   if (result == true) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       if (mounted) {
+  //         print("Fetching splits...");
+  //         context.read<SplitBloc>().add(FetchAllSplitRequested());
+  //       }
+  //     });
+  //   }
+  // }
 
   IconData? getIconByName(String name) {
     for (var item in CustomValues.iconList) {
@@ -89,8 +104,19 @@ class _ExpandedBoxListState extends State<ExpandedBoxList> {
                         ),
                       );
                       // Reload the splits if the result is true
+                      print("Navigation result: $result");
                       if (result == true) {
-                        context.read<SplitBloc>().add(FetchAllSplitRequested());
+                        print("Mounted result: $mounted");
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            print("Fetching splits...");
+                            context
+                                .read<SplitBloc>()
+                                .add(FetchAllSplitRequested());
+                          } else {
+                            print("The widget is not mounted.");
+                          }
+                        });
                       }
                     },
                     child: ListTile(

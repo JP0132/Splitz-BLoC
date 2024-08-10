@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:splitz_bloc/presentation/navigation/navigation_event.dart';
+import 'package:splitz_bloc/presentation/navigation/bloc/navigation_event.dart';
 import 'package:splitz_bloc/presentation/authentication/widgets/auth_button.dart';
 import 'package:splitz_bloc/presentation/authentication/widgets/auth_divider.dart';
 import 'package:splitz_bloc/presentation/authentication/widgets/auth_field.dart';

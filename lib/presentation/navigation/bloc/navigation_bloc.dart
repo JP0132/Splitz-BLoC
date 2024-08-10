@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitz_bloc/presentation/navigation/navigation_state.dart';
+import 'package:splitz_bloc/presentation/navigation/bloc/navigation_state.dart';
 import 'navigation_event.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {

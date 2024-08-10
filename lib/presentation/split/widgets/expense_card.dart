@@ -4,9 +4,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/presentation/split/edit_expense.dart';
-import 'package:splitz_bloc/presentation/split/expense_bloc.dart';
-import 'package:splitz_bloc/presentation/split/expense_event.dart';
-import 'package:splitz_bloc/presentation/split/widgets/TagWidget.dart';
+import 'package:splitz_bloc/presentation/split/bloc/expense_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/expense_event.dart';
+import 'package:splitz_bloc/presentation/split/widgets/tag_widget.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 

@@ -43,12 +43,22 @@ class FetchSplitByIdRequested extends SplitEvent {
   List<Object> get props => [splitId];
 }
 
-class FavouriteSplitRequested extends SplitEvent {
-  final String splitId;
-  final String userId;
+// class FavouriteSplitRequested extends SplitEvent {
+//   final String splitId;
+//   final String userId;
 
-  const FavouriteSplitRequested(this.splitId, this.userId);
+//   const FavouriteSplitRequested(this.splitId, this.userId);
 
-  @override
-  List<Object> get props => [splitId, userId];
-}
+//   @override
+//   List<Object> get props => [splitId, userId];
+// }
+
+// class CheckFavouriteStatusRequested extends SplitEvent {
+//   final String splitId;
+//   final String userId;
+
+//   const CheckFavouriteStatusRequested(this.splitId, this.userId);
+
+//   @override
+//   List<Object> get props => [splitId, userId];
+// }

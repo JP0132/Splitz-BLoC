@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:splitz_bloc/domain/usecases/check_favourite_status_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/create_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/favourite_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_all_splits_usecase.dart';
@@ -13,15 +14,19 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   final CreateSplitUseCase createSplitUseCase;
   final GetAllSplitsUseCase getAllSplitsUseCase;
   final GetSplitByIdUsecase getSplitByIdUsecase;
-  final FavouriteSplitUsecase favouriteSplitUsecase;
+  // final FavouriteSplitUsecase favouriteSplitUsecase;
+  // final CheckFavouriteStatusUsecase checkIfFavSplitUsecase;
 
-  SplitBloc(this.createSplitUseCase, this.getAllSplitsUseCase,
-      this.getSplitByIdUsecase, this.favouriteSplitUsecase)
-      : super(SplitInitial()) {
+  SplitBloc(
+    this.createSplitUseCase,
+    this.getAllSplitsUseCase,
+    this.getSplitByIdUsecase,
+  ) : super(SplitInitial()) {
     on<CreateSplitRequested>(_onCreateSplitRequested);
     on<FetchAllSplitRequested>(_onFetchAllSplitsRequested);
     on<FetchSplitByIdRequested>(_onFetchSplitByIdRequested);
-    on<FavouriteSplitRequested>(_onFavouriteSplitRequested);
+    // on<FavouriteSplitRequested>(_onFavouriteSplitRequested);
+    // on<CheckFavouriteStatusRequested>(_onCheckFavouriteStatusRequested);
   }
 
   void _onCreateSplitRequested(
@@ -60,14 +65,30 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
     }
   }
 
-  FutureOr<void> _onFavouriteSplitRequested(
-      FavouriteSplitRequested event, Emitter<SplitState> emit) async {
-    emit(SplitLoading());
-    try {
-      await favouriteSplitUsecase(event.splitId, event.userId);
-      emit(SplitSuccess());
-    } catch (e) {
-      emit(SplitFailure(e.toString()));
-    }
-  }
+  // FutureOr<void> _onFavouriteSplitRequested(
+  //     FavouriteSplitRequested event, Emitter<SplitState> emit) async {
+  //   try {
+  //     emit(FavouriteSplitLoading());
+  //     await favouriteSplitUsecase(event.splitId, event.userId);
+  //     emit(FavouriteSplitSuccess(true));
+  //   } catch (e) {
+  //     emit(FavouriteSplitFailure(e.toString()));
+  //   }
+  // }
+
+  // FutureOr<void> _onCheckFavouriteStatusRequested(
+  //     CheckFavouriteStatusRequested event, Emitter<SplitState> emit) async {
+  //   try {
+  //     emit(FavouriteSplitLoading());
+
+  //     final existingFav = await checkIfFavSplitUsecase(
+  //       event.splitId,
+  //       event.userId,
+  //     );
+
+  //     emit(FavouriteSplitSuccess(true));
+  //   } catch (e) {
+  //     emit(FavouriteSplitFailure(e.toString()));
+  //   }
+  // }
 }

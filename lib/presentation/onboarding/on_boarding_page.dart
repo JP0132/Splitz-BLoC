@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitz_bloc/presentation/onboarding/on_boarding_cubit.dart';
+import 'package:splitz_bloc/presentation/onboarding/bloc/on_boarding_cubit.dart';
 import 'package:splitz_bloc/presentation/onboarding/widgets/w_onboarding.dart';
 import 'package:splitz_bloc/utils/constants/images.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';

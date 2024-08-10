@@ -5,10 +5,11 @@ import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/add_new_expense.dart';
-import 'package:splitz_bloc/presentation/split/expense_bloc.dart';
-import 'package:splitz_bloc/presentation/split/expense_event.dart';
-import 'package:splitz_bloc/presentation/split/expense_state.dart';
+import 'package:splitz_bloc/presentation/split/bloc/expense_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/expense_event.dart';
+import 'package:splitz_bloc/presentation/split/bloc/expense_state.dart';
 import 'package:splitz_bloc/presentation/split/widgets/expense_card.dart';
+import 'package:splitz_bloc/presentation/split/widgets/favourite_split_btn.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
@@ -107,6 +108,16 @@ class _SplitPageState extends State<SplitPage> {
             Navigator.pop(context, true); // Return true to indicate changes
           },
         ),
+        elevation: 0,
+        actions: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: FavouriteSplitBtn(
+              splitId: widget.splitDetails.id,
+              userId: widget.splitDetails.userId,
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: CustomColours.darkPrimary,

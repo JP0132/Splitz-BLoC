@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
-import 'package:splitz_bloc/presentation/navigation/navigation_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OnboardingState {
   final int currentPage;

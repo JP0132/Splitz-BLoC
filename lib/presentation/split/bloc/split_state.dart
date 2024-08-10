@@ -47,4 +47,16 @@ class SplitError extends SplitState {
   SplitError(this.message);
 }
 
-class SplitFavourited extends SplitState {}
+// class FavouriteSplitLoading extends SplitState {}
+
+// class FavouriteSplitSuccess extends SplitState {
+//   final bool isFavourited;
+
+//   const FavouriteSplitSuccess(this.isFavourited);
+// }
+
+// class FavouriteSplitFailure extends SplitState {
+//   final String error;
+
+//   FavouriteSplitFailure(this.error);
+// }
