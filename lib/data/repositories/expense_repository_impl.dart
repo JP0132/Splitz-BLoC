@@ -33,6 +33,7 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
     // final docRef = firestore.collection('expenses').doc();
     final newExpense = expense.copyWith(
       id: expenseRef.id,
+      userId: user.uid,
     );
 
     await expenseRef.set(newExpense.toMap());
@@ -94,5 +95,21 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
       // Handle any errors that might occur
       throw Exception('Failed to update expense: $e');
     }
+  }
+
+  @override
+  Future<List<ExpenseModel>> getAllExpenses() async {
+    final user = auth.currentUser;
+    if (user == null) throw Exception('User not authenticated');
+
+    final expenseRef = await firestore
+        .collection('expenses')
+        .where('userId', isEqualTo: user.uid)
+        .get();
+
+    return expenseRef.docs.map((doc) {
+      final data = doc.data();
+      return ExpenseModel.fromMap(data);
+    }).toList();
   }
 }

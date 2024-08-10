@@ -219,6 +219,7 @@ class _EditExpenseState extends State<EditExpense> {
                             id: widget.expenseDetails.id,
                             splitId: widget.expenseDetails.splitId,
                             dateTime: selectedDate,
+                            userId: widget.expenseDetails.splitId,
                           );
 
                           context

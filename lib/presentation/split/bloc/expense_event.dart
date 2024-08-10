@@ -26,6 +26,8 @@ class FetchExpensesRequested extends ExpenseEvent {
   List<Object?> get props => [splitId];
 }
 
+class FetchAllUsersExpensesRequested extends ExpenseEvent {}
+
 class DeleteExpenseRequested extends ExpenseEvent {
   final ExpenseModel expense;
 

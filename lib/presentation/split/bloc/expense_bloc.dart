@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitz_bloc/domain/usecases/add_expense_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/delete_expense_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/edit_expense_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/get_all_expenses_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_expenses_for_split_usecase.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_state.dart';
@@ -14,14 +15,20 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   final GetExpensesforSplitUseCase getExpensesforSplitUseCase;
   final DeleteExpenseUseCase deleteExpenseUseCase;
   final EditExpenseUsecase editExpenseUsecase;
+  final GetAllExpensesUsecase getAllExpensesUsecase;
 
-  ExpenseBloc(this.addExpenseUseCase, this.getExpensesforSplitUseCase,
-      this.deleteExpenseUseCase, this.editExpenseUsecase)
+  ExpenseBloc(
+      this.addExpenseUseCase,
+      this.getExpensesforSplitUseCase,
+      this.deleteExpenseUseCase,
+      this.editExpenseUsecase,
+      this.getAllExpensesUsecase)
       : super(ExpenseInitial()) {
     on<AddExpenseRequested>(_onAddExpenseRequested);
     on<FetchExpensesRequested>(_onFetchExpensesRequested);
     on<DeleteExpenseRequested>(_onDeleteExpenseRequested);
     on<EditExpenseRequested>(_onEditExpenseRequested);
+    on<FetchAllUsersExpensesRequested>(_onFetchAllUsersExpensesRequested);
   }
 
   void _onAddExpenseRequested(
@@ -70,6 +77,17 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       emit(ExpenseEdited());
     } catch (e) {
       emit(ExpenseError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _onFetchAllUsersExpensesRequested(
+      FetchAllUsersExpensesRequested event, Emitter<ExpenseState> emit) async {
+    emit(ExpenseLoading());
+    try {
+      final expenses = await getAllExpensesUsecase();
+      emit(ExpensesLoaded(expenses));
+    } catch (e) {
+      emit(ExpenseFailure(e.toString()));
     }
   }
 }

@@ -3,9 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:splitz_bloc/domain/usecases/check_favourite_status_usecase.dart';
-import 'package:splitz_bloc/domain/usecases/favourite_split_usecase.dart';
-import 'package:splitz_bloc/presentation/split/bloc/favourite_bloc.dart';
+import 'package:splitz_bloc/domain/usecases/get_all_expenses_usecase.dart';
 import 'firebase_options.dart';
 
 // Flutter
@@ -26,6 +24,7 @@ import 'package:splitz_bloc/presentation/navigation/bloc/navigation_bloc.dart';
 import 'package:splitz_bloc/presentation/split/create_new_split.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/favourite_bloc.dart';
 
 // Usecases
 import 'package:splitz_bloc/domain/usecases/get_current_user_usecase.dart';
@@ -38,6 +37,8 @@ import 'package:splitz_bloc/domain/usecases/get_all_splits_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_expenses_for_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/edit_expense_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_split_by_id_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/check_favourite_status_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/favourite_split_usecase.dart';
 
 // Repositories
 import 'package:splitz_bloc/data/repositories/auth_repository_impl.dart';
@@ -80,6 +81,7 @@ Future<void> main() async {
       GetExpensesforSplitUseCase(expenseRepository);
   final deleteExpenseUseCase = DeleteExpenseUseCase(expenseRepository);
   final editExpenseUseCase = EditExpenseUsecase(expenseRepository);
+  final getAllExpensesUseCase = GetAllExpensesUsecase(expenseRepository);
 
   runApp(MainApp(
     signUpUseCase: signUpUseCase,
@@ -94,6 +96,7 @@ Future<void> main() async {
     getSplitByIdUseCase: getSplitByIdUseCase,
     favouriteSplitUseCase: favouriteSplitUseCase,
     checkIfFavSplitUseCase: checkIfFavSplitUseCase,
+    getAllExpensesUseCase: getAllExpensesUseCase,
   ));
 }
 
@@ -110,6 +113,7 @@ class MainApp extends StatelessWidget {
   final GetSplitByIdUsecase getSplitByIdUseCase;
   final FavouriteSplitUsecase favouriteSplitUseCase;
   final CheckFavouriteStatusUsecase checkIfFavSplitUseCase;
+  final GetAllExpensesUsecase getAllExpensesUseCase;
 
   const MainApp({
     super.key,
@@ -125,6 +129,7 @@ class MainApp extends StatelessWidget {
     required this.getSplitByIdUseCase,
     required this.favouriteSplitUseCase,
     required this.checkIfFavSplitUseCase,
+    required this.getAllExpensesUseCase,
   });
 
   @override
@@ -156,11 +161,11 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ExpenseBloc(
-            addNewExpenseUseCase,
-            getExpensesforSplitUseCase,
-            deleteExpenseUseCase,
-            editExpenseUseCase,
-          ),
+              addNewExpenseUseCase,
+              getExpensesforSplitUseCase,
+              deleteExpenseUseCase,
+              editExpenseUseCase,
+              getAllExpensesUseCase),
         )
       ],
       child: MaterialApp(

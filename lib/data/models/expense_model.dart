@@ -11,19 +11,20 @@ class ExpenseModel {
   final String notes;
   final DateTime dateTime;
   final String currency;
+  final String userId;
 
-  ExpenseModel({
-    required this.name,
-    required this.paid,
-    required this.cost,
-    required this.dateTime,
-    required this.currency,
-    required this.tags,
-    required this.notes,
-    required this.type,
-    required this.id,
-    required this.splitId,
-  });
+  ExpenseModel(
+      {required this.name,
+      required this.paid,
+      required this.cost,
+      required this.dateTime,
+      required this.currency,
+      required this.tags,
+      required this.notes,
+      required this.type,
+      required this.id,
+      required this.splitId,
+      required this.userId});
 
   ExpenseModel copyWith({
     String? id,
@@ -36,6 +37,7 @@ class ExpenseModel {
     List<String>? tags,
     String? notes,
     String? splitId,
+    String? userId,
   }) {
     return ExpenseModel(
       id: id ?? this.id,
@@ -48,6 +50,7 @@ class ExpenseModel {
       currency: currency ?? this.currency,
       tags: tags ?? this.tags,
       notes: notes ?? this.notes,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -63,6 +66,7 @@ class ExpenseModel {
       'tags': tags,
       'notes': notes,
       'splitId': splitId,
+      'userId': userId,
     };
   }
 
@@ -81,6 +85,7 @@ class ExpenseModel {
       currency: map['currency'] as String? ?? "",
       notes: map['notes'] as String? ?? "",
       splitId: map['splitId'] as String? ?? "",
+      userId: map['userId'] as String? ?? "",
     );
   }
 }

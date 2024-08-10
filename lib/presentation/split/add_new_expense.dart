@@ -187,6 +187,7 @@ class _AddNewExpenseState extends State<AddNewExpense> {
                             id: '',
                             splitId: widget.splitDetails.id,
                             dateTime: selectedDate,
+                            userId: '',
                           );
 
                           context
