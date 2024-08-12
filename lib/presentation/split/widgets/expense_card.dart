@@ -36,11 +36,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
             SlidableAction(
               onPressed: (context) {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditExpense(
-                              expenseDetails: widget.expenseDetails,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditExpense(
+                      expenseDetails: widget.expenseDetails,
+                    ),
+                  ),
+                );
               },
               backgroundColor: Colors.green,
               icon: FontAwesomeIcons.pencil,
@@ -52,8 +54,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     .add(DeleteExpenseRequested(widget.expenseDetails));
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text('Expense deleted successfully!'),
-                  backgroundColor:
-                      Colors.green, // Replace with your custom color
+                  backgroundColor: Colors.green,
                 ));
               },
               backgroundColor: Colors.red,

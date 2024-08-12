@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
-import 'package:splitz_bloc/data/models/user_model.dart';
 import 'package:splitz_bloc/domain/entities/user.dart';
-import 'package:splitz_bloc/models/split_details.dart';
 import 'package:splitz_bloc/presentation/authentication/bloc/auth_bloc.dart';
 import 'package:splitz_bloc/presentation/authentication/bloc/auth_state.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_container.dart';
@@ -87,10 +85,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             } else {
-              return Center(child: Text('No user signed in'));
+              return const Center(child: Text('No user signed in'));
             }
           } else {
-            return Center(child: Text('N/A'));
+            return const Center(child: Text('N/A'));
           }
         }),
         title: Row(
@@ -103,14 +101,14 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Row(
                     children: [
-                      SizedBox(width: 8.0),
+                      const SizedBox(width: 8.0),
                       Text(
                         'WELCOME BACK ${_user?.firstName.toUpperCase() ?? "FIRSTNAME"}',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                         ),
@@ -201,7 +199,7 @@ class _HomePageState extends State<HomePage> {
             BlocBuilder<SplitBloc, SplitState>(
               builder: (context, state) {
                 if (state is SplitLoading) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (state is SplitsLoaded) {
                   final splits = state.splits;
                   if (splits.isEmpty) {

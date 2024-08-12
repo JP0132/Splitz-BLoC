@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitz_bloc/data/models/favourite_model.dart';
 import 'package:splitz_bloc/presentation/split/bloc/favourite_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/favourite_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/favourite_state.dart';
-import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
 
 class FavouriteSplitBtn extends StatefulWidget {
   final String splitId;

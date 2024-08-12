@@ -11,6 +11,8 @@ import 'package:splitz_bloc/presentation/split/bloc/expense_state.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
+import 'package:splitz_bloc/presentation/split/widgets/split_card.dart';
+import 'package:splitz_bloc/presentation/split/widgets/stat_card.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 
 class SplitNavPage extends StatefulWidget {
@@ -25,6 +27,11 @@ class _SplitNavPageState extends State<SplitNavPage> {
   void initState() {
     super.initState();
     context.read<SplitBloc>().add(FetchAllSplitRequested());
+  }
+
+  void _refreshData() {
+    context.read<SplitBloc>().add(FetchAllSplitRequested());
+    context.read<ExpenseBloc>().add(FetchAllUsersExpensesRequested());
   }
 
   @override
@@ -71,19 +78,44 @@ class _SplitNavPageState extends State<SplitNavPage> {
                   // Get the most expensive expense
                   ExpenseModel mostExpensiveExpense = expenses[0];
 
-                  // Most popular tags
-                  List<String> popularTags = [];
+                  // Map to store the counts of each tag
+                  Map<String, int> tagCounter = {};
 
-                  // Number of tags
-                  final numberOfTags = 0;
+                  // Loop through each tag list and increment a counter each time it is used
+                  for (ExpenseModel expense in expenses) {
+                    for (String tag in expense.tags) {
+                      if (tagCounter.containsKey(tag)) {
+                        tagCounter[tag] = tagCounter[tag]! + 1;
+                      } else {
+                        tagCounter[tag] = 1;
+                      }
+                    }
+                  }
 
-                  final expenseBloc = context.read<ExpenseBloc>();
-                  String splitId;
+                  // Convert the map entries (tag, count) to a list and
+                  // sort it in descending order by the count value
+                  List<MapEntry<String, int>> sortedTags = tagCounter.entries
+                      .toList()
+                    ..sort((a, b) => b.value.compareTo(a.value));
 
+                  // List<MapEntry<String, int>> topThreeTags =
+                  //     sortedTags.take(3).toList();
+
+                  // Take the first 3 tags from sortedTags, map only the string value.
+                  // Add it to the list
+                  List<String> popularTags =
+                      sortedTags.take(3).map((entry) => entry.key).toList();
                   // Get the most expensive split
                   for (SplitModel split in splits) {
                     if (split.totalAmount >= mostExpensiveSplit.totalAmount) {
                       mostExpensiveSplit = split;
+                    }
+                  }
+
+                  // Get the most expensive expense
+                  for (ExpenseModel expense in expenses) {
+                    if (expense.paid >= mostExpensiveExpense.paid) {
+                      mostExpensiveExpense = expense;
                     }
                   }
 
@@ -96,36 +128,44 @@ class _SplitNavPageState extends State<SplitNavPage> {
                     },
                     {
                       'title': 'Total Tags',
-                      'value': "54",
+                      'value': expenses
+                          .expand((e) => e.tags)
+                          .toSet()
+                          .length
+                          .toString(),
                       'color': Colors.orange,
                       'icon': Icons.label
                     },
                     {
                       'title': 'Total Expenses',
-                      'value': "4830",
+                      'value': expenses
+                          .fold(0.0, (sum, e) => sum + e.paid)
+                          .toString(),
                       'color': Colors.green,
                       'icon': Icons.receipt
                     },
                     {
                       'title': 'Popular Tags',
-                      'value': ["tourist", "food", "drink"],
+                      'value': popularTags,
                       'color': Colors.blue,
                       'icon': Icons.local_offer
                     },
                     {
                       'title': 'Most Expensive Expense',
                       'value':
-                          "${mostExpensiveSplit.name}: ${mostExpensiveSplit.totalAmount}",
+                          "${mostExpensiveExpense.name}: ${mostExpensiveExpense.paid}",
                       'color': Colors.purple,
                       'icon': Icons.money_off
                     },
                     {
                       'title': 'Most Expensive Split',
-                      'value': "Split name: 34345",
+                      'value':
+                          "${mostExpensiveSplit.name}: ${mostExpensiveSplit.totalAmount}",
                       'color': Colors.teal,
                       'icon': Icons.show_chart
                     },
                   ];
+
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -136,105 +176,16 @@ class _SplitNavPageState extends State<SplitNavPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: stats.map((stat) {
-                              return Container(
-                                padding: EdgeInsets.all(8.0),
-                                margin: EdgeInsets.only(right: 8.0),
-                                decoration: BoxDecoration(
-                                  color: stat['color'],
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 8.0,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: IntrinsicWidth(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(stat['icon'],
-                                              color: Colors.white, size: 24.0),
-                                          SizedBox(width: 8.0),
-                                          Text(
-                                            stat['title']!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      if (stat['value'] is List<String>)
-                                        Wrap(
-                                          spacing: 4.0,
-                                          runSpacing: 4.0,
-                                          children:
-                                              (stat['value'] as List<String>)
-                                                  .map((tag) {
-                                            return Chip(
-                                              label: Text(
-                                                tag,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12.0),
-                                              ),
-                                              backgroundColor: Colors.black26,
-                                            );
-                                          }).toList(),
-                                        )
-                                      else
-                                        Text(
-                                          stat['value']!,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
+                              return StatCard(
+                                stat: stat,
                               );
                             }).toList(),
                           ),
                         ),
-                        SizedBox(height: 16.0),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: splits.length,
-                            itemBuilder: (context, index) {
-                              final split = splits[index];
-                              return Card(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 4.0, horizontal: 8.0),
-                                child: ListTile(
-                                  title: Text(
-                                    split.name,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text('Currency: ${split.currency}'),
-                                  trailing: Text(
-                                    '\$${split.totalAmount.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                        const SizedBox(height: 16.0),
+                        SplitCard(
+                          splits: splits,
+                          onCardTap: _refreshData,
                         ),
                       ],
                     ),
@@ -242,14 +193,14 @@ class _SplitNavPageState extends State<SplitNavPage> {
                 } else if (expenseState is ExpenseError) {
                   return Center(child: Text('Error: ${expenseState.message}'));
                 } else {
-                  return Center(child: Text('No expenses available.'));
+                  return const Center(child: Text('No expenses available.'));
                 }
               });
             }
           } else if (state is SplitError) {
             return Center(child: Text('Error: ${state.message}'));
           } else {
-            return Center(child: Text('No splits available.'));
+            return const Center(child: Text('No splits available.'));
           }
         },
       ),
