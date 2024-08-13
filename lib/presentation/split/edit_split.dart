@@ -122,16 +122,17 @@ class _EditSplitState extends State<EditSplit> {
                 ),
                 BlocConsumer<SplitBloc, SplitState>(
                   listener: (context, state) {
-                    if (state is SplitSuccess) {
+                    if (state is SplitEdited) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Split created successfully!'),
+                        content: Text('Split edited successfully!'),
                         backgroundColor: CustomColours.darkSuccess,
                       ));
-                      Navigator.popAndPushNamed(context, "/home");
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context, true);
+                      }
                     } else if (state is SplitFailure) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text('Failed to create split: ${state.message}'),
+                        content: Text('Failed to edit split: ${state.message}'),
                         backgroundColor: CustomColours.darkError,
                       ));
                     }
@@ -141,23 +142,22 @@ class _EditSplitState extends State<EditSplit> {
                       return const CircularProgressIndicator();
                     }
                     return AuthButton(
-                      text: "Create Split",
+                      text: "Edit Split",
                       operation: () {
                         final name = splitNameController.text;
                         if (name.isNotEmpty &&
                             selectedColour != "" &&
                             selectedCategory != "" &&
                             selectedCurrency != "") {
-                          context.read<SplitBloc>().add(CreateSplitRequested(
-                                name: name,
-                                category: selectedCategory,
-                                colour: selectedColour,
-                                currency: selectedCurrency,
-                              ));
-                          selectedCategory = "";
-                          selectedColour = "";
-                          selectedCurrency = "";
-                          splitNameController.clear();
+                          SplitModel editedSplit = widget.splitDetails.copyWith(
+                            name: name,
+                            category: selectedCategory,
+                            colour: selectedColour,
+                            currency: selectedCurrency,
+                          );
+                          context
+                              .read<SplitBloc>()
+                              .add(EditSplitRequested(editedSplit));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

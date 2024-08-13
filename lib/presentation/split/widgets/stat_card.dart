@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class StatCard extends StatelessWidget {
+class StatCard extends StatefulWidget {
   final Map<String, dynamic> stat;
   const StatCard({
     super.key,
@@ -8,12 +8,17 @@ class StatCard extends StatelessWidget {
   });
 
   @override
+  State<StatCard> createState() => _StatCardState();
+}
+
+class _StatCardState extends State<StatCard> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       margin: const EdgeInsets.only(right: 8.0),
       decoration: BoxDecoration(
-        color: stat['color'],
+        color: widget.stat['color'],
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: const [
           BoxShadow(
@@ -30,10 +35,10 @@ class StatCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(stat['icon'], color: Colors.white, size: 24.0),
+                Icon(widget.stat['icon'], color: Colors.white, size: 24.0),
                 const SizedBox(width: 6.0),
                 Text(
-                  stat['title']!,
+                  widget.stat['title']!,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -44,11 +49,11 @@ class StatCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            if (stat['value'] is List<String>)
+            if (widget.stat['value'] is List<String>)
               Wrap(
                 spacing: 4.0,
                 runSpacing: 4.0,
-                children: (stat['value'] as List<String>).map((tag) {
+                children: (widget.stat['value'] as List<String>).map((tag) {
                   return Chip(
                     label: Text(
                       tag,
@@ -61,7 +66,7 @@ class StatCard extends StatelessWidget {
               )
             else
               Text(
-                stat['value']!,
+                widget.stat['value']!,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,

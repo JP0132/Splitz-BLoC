@@ -4,11 +4,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/edit_split.dart';
 import 'package:splitz_bloc/presentation/split/split.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 
-class SplitCard extends StatelessWidget {
+class SplitCard extends StatefulWidget {
   final VoidCallback onCardTap;
   final List<SplitModel> splits; // Callback function
 
@@ -19,42 +20,91 @@ class SplitCard extends StatelessWidget {
   });
 
   @override
+  State<SplitCard> createState() => _SplitCardState();
+}
+
+class _SplitCardState extends State<SplitCard> {
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-        itemCount: splits.length,
+        itemCount: widget.splits.length,
         itemBuilder: (context, index) {
-          final split = splits[index];
+          final split = widget.splits[index];
           return Slidable(
             key: Key(split.id),
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditSplit(
-                          splitDetails: split,
-                        ),
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.green,
-                  icon: FontAwesomeIcons.pencil,
-                ),
-                SlidableAction(
-                  onPressed: (context) {
-                    // context.read<SplitBloc>().add(DeleteSplitRequested(split));
-                    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    //   content: Text('Expense deleted successfully!'),
-                    //   backgroundColor: Colors.green,
-                    // ));
-                  },
-                  backgroundColor: Colors.red,
-                  icon: FontAwesomeIcons.trash,
-                ),
+                Builder(builder: (con) {
+                  return ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditSplit(
+                              splitDetails: split,
+                            ),
+                          ),
+                        );
+                        widget
+                            .onCardTap(); // Call the callback when returning from SplitDetailPage
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.all(10)),
+                      child: const Icon(
+                        FontAwesomeIcons.pencil,
+                        color: Colors.white,
+                        size: 25,
+                      ));
+                }),
+                Builder(builder: (con) {
+                  return ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: const Text("Delete Split?"),
+                                  content: const Text(
+                                    "Are you sure you want to delete this split, this action is irversiable",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          context.read<SplitBloc>().add(
+                                              DeleteSplitRequested(split.id));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                'Split deleted successfully!'),
+                                            backgroundColor: Colors.green,
+                                          ));
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          "DELETE",
+                                          style: TextStyle(color: Colors.red),
+                                        ))
+                                  ],
+                                ));
+                        // Call the callback when returning from SplitDetailPage
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.all(10)),
+                      child: const Icon(
+                        FontAwesomeIcons.trash,
+                        color: Colors.white,
+                        size: 25,
+                      ));
+                }),
               ],
             ),
             child: GestureDetector(
@@ -65,7 +115,8 @@ class SplitCard extends StatelessWidget {
                     builder: (context) => SplitPage(splitDetails: split),
                   ),
                 );
-                onCardTap(); // Call the callback when returning from SplitDetailPage
+                widget
+                    .onCardTap(); // Call the callback when returning from SplitDetailPage
               },
               child: Card(
                 margin:

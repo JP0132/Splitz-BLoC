@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:splitz_bloc/domain/usecases/delete_split_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/edit_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_all_expenses_usecase.dart';
 import 'firebase_options.dart';
 
@@ -71,6 +73,8 @@ Future<void> main() async {
   final getSplitByIdUseCase = GetSplitByIdUsecase(splitRepository);
   final favouriteSplitUseCase = FavouriteSplitUsecase(splitRepository);
   final checkIfFavSplitUseCase = CheckFavouriteStatusUsecase(splitRepository);
+  final editSplitUseCase = EditSplitUsecase(splitRepository);
+  final deleteSplitUseCase = DeleteSplitUsecase(splitRepository);
 
   // Expense Setup
   final expenseRepository = ExpenseRepositoryImpl(
@@ -97,6 +101,8 @@ Future<void> main() async {
     favouriteSplitUseCase: favouriteSplitUseCase,
     checkIfFavSplitUseCase: checkIfFavSplitUseCase,
     getAllExpensesUseCase: getAllExpensesUseCase,
+    editSplitUseCase: editSplitUseCase,
+    deleteSplitUseCase: deleteSplitUseCase,
   ));
 }
 
@@ -114,6 +120,8 @@ class MainApp extends StatelessWidget {
   final FavouriteSplitUsecase favouriteSplitUseCase;
   final CheckFavouriteStatusUsecase checkIfFavSplitUseCase;
   final GetAllExpensesUsecase getAllExpensesUseCase;
+  final EditSplitUsecase editSplitUseCase;
+  final DeleteSplitUsecase deleteSplitUseCase;
 
   const MainApp({
     super.key,
@@ -130,6 +138,8 @@ class MainApp extends StatelessWidget {
     required this.favouriteSplitUseCase,
     required this.checkIfFavSplitUseCase,
     required this.getAllExpensesUseCase,
+    required this.editSplitUseCase,
+    required this.deleteSplitUseCase,
   });
 
   @override
@@ -151,6 +161,8 @@ class MainApp extends StatelessWidget {
             createSplitUseCase,
             getAllSplitsUseCase,
             getSplitByIdUseCase,
+            editSplitUseCase,
+            deleteSplitUseCase,
           ),
         ),
         BlocProvider(

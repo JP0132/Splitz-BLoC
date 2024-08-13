@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:splitz_bloc/data/models/split_model.dart';
 
 abstract class SplitEvent extends Equatable {
   const SplitEvent();
@@ -43,22 +44,20 @@ class FetchSplitByIdRequested extends SplitEvent {
   List<Object> get props => [splitId];
 }
 
-// class FavouriteSplitRequested extends SplitEvent {
-//   final String splitId;
-//   final String userId;
+class EditSplitRequested extends SplitEvent {
+  final SplitModel split;
 
-//   const FavouriteSplitRequested(this.splitId, this.userId);
+  const EditSplitRequested(this.split);
 
-//   @override
-//   List<Object> get props => [splitId, userId];
-// }
+  @override
+  List<Object> get props => [split];
+}
 
-// class CheckFavouriteStatusRequested extends SplitEvent {
-//   final String splitId;
-//   final String userId;
+class DeleteSplitRequested extends SplitEvent {
+  final String splitId;
 
-//   const CheckFavouriteStatusRequested(this.splitId, this.userId);
+  const DeleteSplitRequested(this.splitId);
 
-//   @override
-//   List<Object> get props => [splitId, userId];
-// }
+  @override
+  List<Object> get props => [splitId];
+}

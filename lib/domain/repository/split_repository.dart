@@ -7,4 +7,6 @@ abstract interface class SplitRepository {
   Future<SplitModel> getSplitById(String splitId);
   Future<void> favouriteSplit(FavouriteModel favSplit);
   Future<bool> checkFavouriteStatus(String splitId, String userId);
+  Future<void> editSplit(SplitModel split);
+  Future<void> deleteSplit(String splitId);
 }

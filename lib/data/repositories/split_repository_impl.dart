@@ -97,4 +97,47 @@ class SplitRepositoryImpl implements SplitRepository {
 
     return true;
   }
+
+  @override
+  Future<void> deleteSplit(String splitId) async {
+    try {
+      // Query expenses associated with the splitId
+      final expenseRef = await firestore
+          .collection("expenses")
+          .where('splitId', isEqualTo: splitId)
+          .get();
+
+      //  Delete each expense document if it exists.
+      if (expenseRef.docs.isNotEmpty) {
+        for (var doc in expenseRef.docs) {
+          await doc.reference.delete();
+        }
+      }
+
+      // Delete the split document
+      final splitRef = firestore.collection('splits').doc(splitId);
+      await splitRef.delete();
+    } catch (e) {
+      throw Exception('Failed to update split: $e');
+    }
+  }
+
+  @override
+  Future<void> editSplit(SplitModel split) async {
+    try {
+      final splitRef = await firestore
+          .collection('splits')
+          .where('id', isEqualTo: split.id)
+          .get();
+
+      if (splitRef.docs.isNotEmpty) {
+        final doc = splitRef.docs.first;
+        await doc.reference.update(split.toMap());
+      } else {
+        throw Exception('Split not found');
+      }
+    } catch (e) {
+      throw Exception('Failed to update split: $e');
+    }
+  }
 }

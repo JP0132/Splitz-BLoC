@@ -47,19 +47,52 @@ class _ExpenseCardState extends State<ExpenseCard> {
               backgroundColor: Colors.green,
               icon: FontAwesomeIcons.pencil,
             ),
-            SlidableAction(
-              onPressed: (context) {
-                context
-                    .read<ExpenseBloc>()
-                    .add(DeleteExpenseRequested(widget.expenseDetails));
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Expense deleted successfully!'),
-                  backgroundColor: Colors.green,
-                ));
-              },
-              backgroundColor: Colors.red,
-              icon: FontAwesomeIcons.trash,
-            ),
+            Builder(builder: (con) {
+              return ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Text("Delete Split?"),
+                              content: const Text(
+                                "Are you sure you want to delete this expense, this action is irversiable",
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      context.read<ExpenseBloc>().add(
+                                          DeleteExpenseRequested(
+                                              widget.expenseDetails));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            'Expense deleted successfully!'),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "DELETE",
+                                      style: TextStyle(color: Colors.red),
+                                    ))
+                              ],
+                            ));
+                    // Call the callback when returning from SplitDetailPage
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.all(10)),
+                  child: const Icon(
+                    FontAwesomeIcons.trash,
+                    color: Colors.white,
+                    size: 25,
+                  ));
+            }),
           ],
         ),
         child: GestureDetector(

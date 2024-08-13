@@ -38,14 +38,27 @@ class SplitLoaded extends SplitState {
 
 class SplitTotalUpdated extends SplitState {
   final List<SplitModel> splits;
-  SplitTotalUpdated(this.splits);
+  const SplitTotalUpdated(this.splits);
 }
 
 class SplitError extends SplitState {
   final String message;
 
-  SplitError(this.message);
+  const SplitError(this.message);
 }
+
+class SplitEdited extends SplitState {}
+
+class SplitDeleted extends SplitState {
+  final List<SplitModel> splits;
+
+  const SplitDeleted(this.splits);
+
+  @override
+  List<Object?> get props => [splits];
+}
+
+
 
 // class FavouriteSplitLoading extends SplitState {}
 

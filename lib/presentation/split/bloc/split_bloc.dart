@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:splitz_bloc/domain/usecases/check_favourite_status_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/create_split_usecase.dart';
-import 'package:splitz_bloc/domain/usecases/favourite_split_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/delete_split_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/edit_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_all_splits_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_split_by_id_usecase.dart';
 import 'split_state.dart';
@@ -14,19 +14,21 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   final CreateSplitUseCase createSplitUseCase;
   final GetAllSplitsUseCase getAllSplitsUseCase;
   final GetSplitByIdUsecase getSplitByIdUsecase;
-  // final FavouriteSplitUsecase favouriteSplitUsecase;
-  // final CheckFavouriteStatusUsecase checkIfFavSplitUsecase;
+  final EditSplitUsecase editSplitUsecase;
+  final DeleteSplitUsecase deleteSplitUsecase;
 
   SplitBloc(
     this.createSplitUseCase,
     this.getAllSplitsUseCase,
     this.getSplitByIdUsecase,
+    this.editSplitUsecase,
+    this.deleteSplitUsecase,
   ) : super(SplitInitial()) {
     on<CreateSplitRequested>(_onCreateSplitRequested);
     on<FetchAllSplitRequested>(_onFetchAllSplitsRequested);
     on<FetchSplitByIdRequested>(_onFetchSplitByIdRequested);
-    // on<FavouriteSplitRequested>(_onFavouriteSplitRequested);
-    // on<CheckFavouriteStatusRequested>(_onCheckFavouriteStatusRequested);
+    on<EditSplitRequested>(_onEditSplitRequested);
+    on<DeleteSplitRequested>(_onDeleteSplitRequested);
   }
 
   void _onCreateSplitRequested(
@@ -65,30 +67,27 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
     }
   }
 
-  // FutureOr<void> _onFavouriteSplitRequested(
-  //     FavouriteSplitRequested event, Emitter<SplitState> emit) async {
-  //   try {
-  //     emit(FavouriteSplitLoading());
-  //     await favouriteSplitUsecase(event.splitId, event.userId);
-  //     emit(FavouriteSplitSuccess(true));
-  //   } catch (e) {
-  //     emit(FavouriteSplitFailure(e.toString()));
-  //   }
-  // }
+  FutureOr<void> _onEditSplitRequested(
+      EditSplitRequested event, Emitter<SplitState> emit) async {
+    emit(SplitLoading());
+    try {
+      await editSplitUsecase(event.split);
+      add(EditSplitRequested(event.split));
+      emit(SplitEdited());
+    } catch (e) {
+      emit(SplitFailure(e.toString()));
+    }
+  }
 
-  // FutureOr<void> _onCheckFavouriteStatusRequested(
-  //     CheckFavouriteStatusRequested event, Emitter<SplitState> emit) async {
-  //   try {
-  //     emit(FavouriteSplitLoading());
-
-  //     final existingFav = await checkIfFavSplitUsecase(
-  //       event.splitId,
-  //       event.userId,
-  //     );
-
-  //     emit(FavouriteSplitSuccess(true));
-  //   } catch (e) {
-  //     emit(FavouriteSplitFailure(e.toString()));
-  //   }
-  // }
+  FutureOr<void> _onDeleteSplitRequested(
+      DeleteSplitRequested event, Emitter<SplitState> emit) async {
+    emit(SplitLoading());
+    try {
+      await deleteSplitUsecase(event.splitId);
+      final splits = await getAllSplitsUseCase();
+      emit(SplitsLoaded(splits));
+    } catch (e) {
+      emit(SplitError(e.toString()));
+    }
+  }
 }

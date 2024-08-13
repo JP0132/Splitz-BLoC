@@ -29,6 +29,14 @@ class _SplitNavPageState extends State<SplitNavPage> {
     context.read<SplitBloc>().add(FetchAllSplitRequested());
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // This method is called when the page comes back into view.
+    // Ensure the splits are refetched every time the page is shown.
+    context.read<SplitBloc>().add(FetchAllSplitRequested());
+  }
+
   void _refreshData() {
     context.read<SplitBloc>().add(FetchAllSplitRequested());
     context.read<ExpenseBloc>().add(FetchAllUsersExpensesRequested());
@@ -65,7 +73,20 @@ class _SplitNavPageState extends State<SplitNavPage> {
                   final splits = state.splits;
 
                   if (expenses.isEmpty) {
-                    return Center(child: Text("No Expenses have been added"));
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text("Add Expenses to get stats"),
+                          const SizedBox(height: 16.0),
+                          SplitCard(
+                            splits: splits,
+                            onCardTap: _refreshData,
+                          ),
+                        ],
+                      ),
+                    );
                   }
 
                   // Getting the total spent of the combined values of the splits
