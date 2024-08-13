@@ -17,7 +17,7 @@ class CustomValues {
   static List<IconItem> iconList = [
     IconItem(name: "Work", icon: Icons.work),
     IconItem(name: "Holiday", icon: Icons.beach_access),
-    IconItem(name: "Rersonal", icon: Icons.person),
+    IconItem(name: "Personal", icon: Icons.person),
     IconItem(name: "Food & Dining", icon: Icons.dining),
     IconItem(name: "Shopping", icon: Icons.shopping_bag),
     IconItem(name: "Entertainment", icon: Icons.tv),

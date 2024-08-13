@@ -33,54 +33,69 @@ class _ExpenseCardState extends State<ExpenseCard> {
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
-            SlidableAction(
-              onPressed: (context) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditExpense(
-                      expenseDetails: widget.expenseDetails,
-                    ),
+            Builder(
+              builder: (con) {
+                return ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditExpense(
+                          expenseDetails: widget.expenseDetails,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.all(10)),
+                  child: const Icon(
+                    FontAwesomeIcons.pencil,
+                    color: Colors.white,
+                    size: 25,
                   ),
                 );
               },
-              backgroundColor: Colors.green,
-              icon: FontAwesomeIcons.pencil,
             ),
-            Builder(builder: (con) {
-              return ElevatedButton(
+            Builder(
+              builder: (con) {
+                return ElevatedButton(
                   onPressed: () {
                     showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                              title: const Text("Delete Split?"),
-                              content: const Text(
-                                "Are you sure you want to delete this expense, this action is irversiable",
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancel'),
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Delete Split?"),
+                        content: const Text(
+                          "Are you sure you want to delete this expense, this action is irversiable",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.read<ExpenseBloc>().add(
+                                  DeleteExpenseRequested(
+                                      widget.expenseDetails));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Expense deleted successfully!'),
+                                  backgroundColor: Colors.green,
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      context.read<ExpenseBloc>().add(
-                                          DeleteExpenseRequested(
-                                              widget.expenseDetails));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text(
-                                            'Expense deleted successfully!'),
-                                        backgroundColor: Colors.green,
-                                      ));
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text(
-                                      "DELETE",
-                                      style: TextStyle(color: Colors.red),
-                                    ))
-                              ],
-                            ));
+                              );
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "DELETE",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                     // Call the callback when returning from SplitDetailPage
                   },
                   style: ElevatedButton.styleFrom(
@@ -91,8 +106,10 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     FontAwesomeIcons.trash,
                     color: Colors.white,
                     size: 25,
-                  ));
-            }),
+                  ),
+                );
+              },
+            ),
           ],
         ),
         child: GestureDetector(

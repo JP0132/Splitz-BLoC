@@ -79,18 +79,33 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
     // Retrieve the document reference for the expense and split
 
     try {
-      final snapshot = await firestore
-          .collection('expenses')
-          .where('id', isEqualTo: expense.id)
-          .get();
+      final expenseRef = firestore.collection('expenses').doc(expense.id);
+      final expenseSnapshot = await expenseRef.get();
 
-      // Check if the document exists
-      if (snapshot.docs.isNotEmpty) {
-        final doc = snapshot.docs.first;
-        await doc.reference.update(expense.toMap());
-      } else {
-        throw Exception('Expense not found');
+      if (!expenseSnapshot.exists) {
+        throw Exception("Expense does not exist!");
       }
+
+      double difference;
+
+      if (expense.paid != expenseSnapshot.get("paid")) {
+        final oldPaid = expenseSnapshot.get("paid");
+        difference = expense.paid - oldPaid;
+        final splitRef = firestore.collection("splits").doc(expense.splitId);
+
+        await firestore.runTransaction((transaction) async {
+          final splitSnapshot = await transaction.get(splitRef);
+
+          if (!splitSnapshot.exists) {
+            throw Exception('Split does not exist!');
+          }
+          final newTotalAmount =
+              (splitSnapshot.data()?['totalAmount'] ?? 0) + difference;
+          transaction.update(splitRef, {'totalAmount': newTotalAmount});
+        });
+      }
+
+      await expenseRef.update(expense.toMap());
     } catch (e) {
       // Handle any errors that might occur
       throw Exception('Failed to update expense: $e');
