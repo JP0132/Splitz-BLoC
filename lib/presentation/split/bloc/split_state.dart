@@ -47,6 +47,8 @@ class SplitError extends SplitState {
   const SplitError(this.message);
 }
 
+class SplitEditing extends SplitState {}
+
 class SplitEdited extends SplitState {}
 
 class SplitDeleted extends SplitState {

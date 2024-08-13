@@ -69,10 +69,10 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
 
   FutureOr<void> _onEditSplitRequested(
       EditSplitRequested event, Emitter<SplitState> emit) async {
-    emit(SplitLoading());
+    emit(SplitEditing());
     try {
       await editSplitUsecase(event.split);
-      add(EditSplitRequested(event.split));
+      //add(FetchAllSplitRequested());
       emit(SplitEdited());
     } catch (e) {
       emit(SplitFailure(e.toString()));

@@ -6,6 +6,7 @@ import 'package:splitz_bloc/presentation/authentication/widgets/auth_field.dart'
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
+import 'package:splitz_bloc/presentation/split/split_nav_page.dart';
 import 'package:splitz_bloc/presentation/split/widgets/custom_dropdown.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/constants/images.dart';
@@ -138,7 +139,7 @@ class _EditSplitState extends State<EditSplit> {
                     }
                   },
                   builder: (context, state) {
-                    if (state is SplitLoading) {
+                    if (state is SplitEditing) {
                       return const CircularProgressIndicator();
                     }
                     return AuthButton(

@@ -38,8 +38,8 @@ class _SplitCardState extends State<SplitCard> {
               children: [
                 Builder(builder: (con) {
                   return ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditSplit(
@@ -47,8 +47,10 @@ class _SplitCardState extends State<SplitCard> {
                             ),
                           ),
                         );
-                        widget
-                            .onCardTap(); // Call the callback when returning from SplitDetailPage
+                        if (result == true) {
+                          widget
+                              .onCardTap(); // Refresh data if split was edited
+                        } // Call the callback when returning from SplitDetailPage
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -68,7 +70,7 @@ class _SplitCardState extends State<SplitCard> {
                             builder: (context) => AlertDialog(
                                   title: const Text("Delete Split?"),
                                   content: const Text(
-                                    "Are you sure you want to delete this split, this action is irversiable",
+                                    "Are you sure you want to delete this split, this action is irreversible",
                                   ),
                                   actions: [
                                     TextButton(

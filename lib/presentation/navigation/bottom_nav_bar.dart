@@ -6,6 +6,9 @@ import 'package:splitz_bloc/presentation/navigation/bloc/navigation_bloc.dart';
 import 'package:splitz_bloc/presentation/navigation/bloc/navigation_event.dart';
 import 'package:splitz_bloc/presentation/navigation/bloc/navigation_state.dart';
 import 'package:splitz_bloc/presentation/home/home_page.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
+import 'package:splitz_bloc/presentation/split/create_new_split.dart';
 import 'package:splitz_bloc/presentation/split/split_nav_page.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 
@@ -19,12 +22,21 @@ class CustomBottomNavbar extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/createSplit');
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateNewSplit(),
+              ),
+            );
+            if (result == true) {
+              // Refresh the data
+              context.read<SplitBloc>().add(FetchAllSplitRequested());
+            }
           },
-          shape: CircleBorder(),
-          child: const Icon(Icons.add),
+          shape: const CircleBorder(),
           backgroundColor: CustomColours.darkPrimary,
+          child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(

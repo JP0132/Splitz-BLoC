@@ -104,7 +104,7 @@ class _CreateNewSplitState extends State<CreateNewSplit> {
                         content: Text('Split created successfully!'),
                         backgroundColor: CustomColours.darkSuccess,
                       ));
-                      Navigator.popAndPushNamed(context, "/home");
+                      Navigator.pop(context, true);
                     } else if (state is SplitFailure) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content:

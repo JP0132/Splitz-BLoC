@@ -26,14 +26,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
   @override
   void initState() {
     super.initState();
-    context.read<SplitBloc>().add(FetchAllSplitRequested());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // This method is called when the page comes back into view.
-    // Ensure the splits are refetched every time the page is shown.
+    // Fetching the splits first
     context.read<SplitBloc>().add(FetchAllSplitRequested());
   }
 
@@ -46,23 +39,25 @@ class _SplitNavPageState extends State<SplitNavPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Splits'),
+        title: const Text('Your Splits'),
         centerTitle: true,
       ),
-
-      // Fetching the splits first
       body: BlocBuilder<SplitBloc, SplitState>(
         builder: (context, state) {
-          // If splits are still fetching then show loading circle
+          // If splits are sfettill ching then show loading circle
           if (state is SplitLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is SplitsLoaded) {
+
             // Splits are now fetched
+          } else if (state is SplitsLoaded) {
+            // Empty show a message in the centre
             if (state.splits.isEmpty) {
               return const Center(child: Text("No Splits have been created"));
             } else {
+              // Get all the expenses for the user
               final expenseBloc = context.read<ExpenseBloc>();
               expenseBloc.add(FetchAllUsersExpensesRequested());
+
               return BlocBuilder<ExpenseBloc, ExpenseState>(
                   builder: (context, expenseState) {
                 if (expenseState is ExpenseLoading) {
@@ -72,6 +67,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
                   final expenses = expenseState.expenses;
                   final splits = state.splits;
 
+                  // If there are no expenses then show the split cards only.
                   if (expenses.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),

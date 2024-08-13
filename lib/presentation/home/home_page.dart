@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             ClipPath(
