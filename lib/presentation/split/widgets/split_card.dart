@@ -24,6 +24,9 @@ class SplitCard extends StatefulWidget {
 }
 
 class _SplitCardState extends State<SplitCard> {
+  SlidableController? currentOpen;
+  bool _isOpen = false;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -36,9 +39,20 @@ class _SplitCardState extends State<SplitCard> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-                Builder(builder: (con) {
+                Builder(builder: (cont) {
+                  if (currentOpen != null &&
+                      currentOpen != Slidable.of(cont)!) {
+                    if (_isOpen) {
+                      currentOpen!.close();
+                      _isOpen = false;
+                    }
+                  }
+                  currentOpen = Slidable.of(cont)!;
+                  _isOpen = true;
                   return ElevatedButton(
                       onPressed: () async {
+                        Slidable.of(cont)!.close();
+                        _isOpen = false;
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -50,7 +64,7 @@ class _SplitCardState extends State<SplitCard> {
                         if (result == true) {
                           widget
                               .onCardTap(); // Refresh data if split was edited
-                        } // Call the callback when returning from SplitDetailPage
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -95,7 +109,6 @@ class _SplitCardState extends State<SplitCard> {
                                         ))
                                   ],
                                 ));
-                        // Call the callback when returning from SplitDetailPage
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -124,7 +137,19 @@ class _SplitCardState extends State<SplitCard> {
                 margin:
                     const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                 child: ListTile(
-                  leading: Icon(Helperfunctions.getIconByName(split.category)),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      gradient: Helperfunctions.getColourByName(split.colour),
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      child: Icon(
+                          Helperfunctions.getIconByName(split.category) ??
+                              Icons.error),
+                    ),
+                  ),
                   title: Text(
                     split.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),

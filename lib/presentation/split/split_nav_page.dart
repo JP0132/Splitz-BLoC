@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
-import 'package:splitz_bloc/domain/usecases/get_all_expenses_usecase.dart';
-import 'package:splitz_bloc/domain/usecases/get_expenses_for_split_usecase.dart';
-import 'package:splitz_bloc/presentation/home/widgets/expanded_box_list.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_state.dart';
@@ -13,7 +10,6 @@ import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
 import 'package:splitz_bloc/presentation/split/widgets/split_card.dart';
 import 'package:splitz_bloc/presentation/split/widgets/stat_card.dart';
-import 'package:splitz_bloc/utils/constants/colours.dart';
 
 class SplitNavPage extends StatefulWidget {
   const SplitNavPage({super.key});
@@ -44,10 +40,23 @@ class _SplitNavPageState extends State<SplitNavPage> {
       ),
       body: BlocBuilder<SplitBloc, SplitState>(
         builder: (context, state) {
-          // If splits are sfettill ching then show loading circle
+          // If splits are still  fetching then show loading circle
           if (state is SplitLoading) {
-            return const Center(child: CircularProgressIndicator());
-
+            return Center(
+              child: TweenAnimationBuilder(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(seconds: 4),
+                builder: (context, value, _) => SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(
+                    value: value,
+                    backgroundColor: Colors.grey,
+                    strokeWidth: 4,
+                  ),
+                ),
+              ),
+            );
             // Splits are now fetched
           } else if (state is SplitsLoaded) {
             // Empty show a message in the centre
@@ -61,7 +70,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
               return BlocBuilder<ExpenseBloc, ExpenseState>(
                   builder: (context, expenseState) {
                 if (expenseState is ExpenseLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center();
                 } else if (expenseState is ExpensesLoaded) {
                   // Saving the fetched values
                   final expenses = expenseState.expenses;
