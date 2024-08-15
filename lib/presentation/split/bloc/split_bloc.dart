@@ -61,7 +61,7 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
     emit(SplitLoading());
     try {
       final split = await getSplitByIdUsecase(event.splitId);
-      emit(SplitLoaded(split));
+      emit(SplitLoaded(split!));
     } catch (e) {
       emit(SplitError(e.toString()));
     }

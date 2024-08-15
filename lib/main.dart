@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:splitz_bloc/domain/usecases/delete_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/edit_split_usecase.dart';
 import 'package:splitz_bloc/domain/usecases/get_all_expenses_usecase.dart';
+import 'package:splitz_bloc/domain/usecases/get_favourited_split_usecase.dart';
 import 'firebase_options.dart';
 
 // Flutter
@@ -75,6 +76,7 @@ Future<void> main() async {
   final checkIfFavSplitUseCase = CheckFavouriteStatusUsecase(splitRepository);
   final editSplitUseCase = EditSplitUsecase(splitRepository);
   final deleteSplitUseCase = DeleteSplitUsecase(splitRepository);
+  final getFavouritedSplitUseCase = GetFavouritedSplitUsecase(splitRepository);
 
   // Expense Setup
   final expenseRepository = ExpenseRepositoryImpl(
@@ -103,6 +105,7 @@ Future<void> main() async {
     getAllExpensesUseCase: getAllExpensesUseCase,
     editSplitUseCase: editSplitUseCase,
     deleteSplitUseCase: deleteSplitUseCase,
+    getFavouritedSplitUseCase: getFavouritedSplitUseCase,
   ));
 }
 
@@ -122,6 +125,7 @@ class MainApp extends StatelessWidget {
   final GetAllExpensesUsecase getAllExpensesUseCase;
   final EditSplitUsecase editSplitUseCase;
   final DeleteSplitUsecase deleteSplitUseCase;
+  final GetFavouritedSplitUsecase getFavouritedSplitUseCase;
 
   const MainApp({
     super.key,
@@ -140,6 +144,7 @@ class MainApp extends StatelessWidget {
     required this.getAllExpensesUseCase,
     required this.editSplitUseCase,
     required this.deleteSplitUseCase,
+    required this.getFavouritedSplitUseCase,
   });
 
   @override
@@ -169,6 +174,7 @@ class MainApp extends StatelessWidget {
           create: (context) => FavouriteBloc(
             favouriteSplitUseCase,
             checkIfFavSplitUseCase,
+            getFavouritedSplitUseCase,
           ),
         ),
         BlocProvider(

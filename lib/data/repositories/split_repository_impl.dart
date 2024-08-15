@@ -42,7 +42,7 @@ class SplitRepositoryImpl implements SplitRepository {
   }
 
   @override
-  Future<void> favouriteSplit(FavouriteModel favSplit) async {
+  Future<bool> favouriteSplit(FavouriteModel favSplit) async {
     //final expenseRef = firestore.collection('expenses').doc(expense.id);
 
     // Check if there is an exisiting favourite for this user
@@ -70,7 +70,10 @@ class SplitRepositoryImpl implements SplitRepository {
           id: favRef.id, userId: favSplit.userId, splitId: favSplit.splitId);
 
       await favRef.set(newFavSplit.toMap());
+      return true;
     }
+
+    return false;
   }
 
   @override
@@ -136,6 +139,32 @@ class SplitRepositoryImpl implements SplitRepository {
       } else {
         throw Exception('Split not found');
       }
+    } catch (e) {
+      throw Exception('Failed to update split: $e');
+    }
+  }
+
+  @override
+  Future<SplitModel?> getFavourited() async {
+    try {
+      final user = auth.currentUser;
+      if (user == null) throw Exception('User not authenticated');
+
+      final favSnapshot = await firestore
+          .collection('favourites')
+          .where('userId', isEqualTo: user.uid)
+          .get();
+
+      SplitModel? favSplit;
+      if (favSnapshot.docs.isEmpty) {
+        return null;
+      }
+
+      for (var fav in favSnapshot.docs) {
+        favSplit = await getSplitById(fav.get("splitId"));
+      }
+
+      return favSplit;
     } catch (e) {
       throw Exception('Failed to update split: $e');
     }

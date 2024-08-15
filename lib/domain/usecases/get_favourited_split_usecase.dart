@@ -1,12 +1,12 @@
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/domain/repository/split_repository.dart';
 
-class GetSplitByIdUsecase {
+class GetFavouritedSplitUsecase {
   final SplitRepository repository;
 
-  GetSplitByIdUsecase(this.repository);
+  GetFavouritedSplitUsecase(this.repository);
 
-  Future<SplitModel?> call(String splitId) {
-    return repository.getSplitById(splitId);
+  Future<SplitModel?> call() {
+    return repository.getFavourited();
   }
 }

@@ -17,20 +17,14 @@ class FavouriteSplitBtn extends StatefulWidget {
 class _FavouriteSplitBtnState extends State<FavouriteSplitBtn> {
   bool _isFavourited = false;
 
+  bool _favourited = false;
+
   @override
   void initState() {
     super.initState();
     final favBloc = context.read<FavouriteBloc>();
     favBloc.add(CheckFavouriteStatusRequested(widget.splitId, widget.userId));
   }
-
-  // Future<void> _checkIfFavourited() async{
-  //   final splitRepo = context.read<SplitRepository>();
-  //   FavouriteModel favModel;
-
-  //   final existingFav = await splitRepo.favouriteSplit(, widget.userId);
-
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -50,26 +44,17 @@ class _FavouriteSplitBtnState extends State<FavouriteSplitBtn> {
           padding: const EdgeInsets.all(2),
           child: GestureDetector(
             onTap: () {
+              setState(() {
+                _isFavourited = !_isFavourited;
+              });
               context
                   .read<FavouriteBloc>()
                   .add(FavouriteSplitRequested(widget.splitId, widget.userId));
-              // setState(() {
-              //   if (_favourited) {
-              //     _favourited = false;
-              //   } else {
-              //     _favourited = true;
-              //   }
-              // });
             },
-            child: !_isFavourited
-                ? Icon(
-                    Icons.star_border,
-                    size: 30,
-                  )
-                : Icon(
-                    Icons.star,
-                    size: 30,
-                  ),
+            child: Icon(
+              _isFavourited ? Icons.star : Icons.star_border,
+              size: 30,
+            ),
           ),
         );
       },

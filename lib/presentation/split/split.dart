@@ -100,129 +100,133 @@ class _SplitPageState extends State<SplitPage> {
   Widget build(BuildContext context) {
     bool isDark = Helperfunctions.isDarkMode(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context, true); // Return true to indicate changes
-          },
-        ),
-        elevation: 0,
-        actions: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: FavouriteSplitBtn(
-              splitId: widget.splitDetails.id,
-              userId: widget.splitDetails.userId,
-            ),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: CustomColours.darkPrimary,
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    AddNewExpense(splitDetails: widget.splitDetails))),
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 0, right: 0, left: 15),
-              child: FeaturedSplit(
-                splitDetails: widget.splitDetails,
-                totalAmount: _totalSpent,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, true); // Return true to indicate changes
+            },
+          ),
+          elevation: 0,
+          actions: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: FavouriteSplitBtn(
+                splitId: widget.splitDetails.id,
+                userId: widget.splitDetails.userId,
               ),
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            Row(
-              children: [
-                // Search bar
-                Expanded(
-                  child: Container(
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? Colors.white.withOpacity(0.1)
-                          : CustomColours.lightOnSurface.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Icon(Icons.search, color: Colors.white),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: _searchController,
-                                decoration: const InputDecoration(
-                                  hintText:
-                                      'Search, use commas for multi search',
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(fontSize: 14),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: CustomColours.darkPrimary,
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      AddNewExpense(splitDetails: widget.splitDetails))),
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 0, right: 0, left: 15),
+                child: FeaturedSplit(
+                  splitDetails: widget.splitDetails,
+                  totalAmount: _totalSpent,
+                ),
+              ),
+              const SizedBox(
+                height: 24.0,
+              ),
+              Row(
+                children: [
+                  // Search bar
+                  Expanded(
+                    child: Container(
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? Colors.white.withOpacity(0.1)
+                            : CustomColours.lightOnSurface.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.search, color: Colors.white),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  controller: _searchController,
+                                  decoration: const InputDecoration(
+                                    hintText:
+                                        'Search, use commas for multi search',
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(fontSize: 14),
+                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
-                                style: TextStyle(fontSize: 14),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            BlocBuilder<ExpenseBloc, ExpenseState>(
-              builder: (context, state) {
-                if (state is ExpenseLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is ExpensesLoaded) {
-                  _expenses = state.expenses;
-                  _filterExpenses();
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              BlocBuilder<ExpenseBloc, ExpenseState>(
+                builder: (context, state) {
+                  if (state is ExpenseLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ExpensesLoaded) {
+                    _expenses = state.expenses;
+                    _filterExpenses();
 
-                  if (_filteredExpenses.isEmpty) {
-                    return const Center(child: Text('No expenses available.'));
+                    if (_filteredExpenses.isEmpty) {
+                      return const Center(
+                          child: Text('No expenses available.'));
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8, right: 8, left: 8, bottom: 100),
+                        child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _filteredExpenses.length,
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final expense = _filteredExpenses[index];
+                              return ExpenseCard(
+                                expenseDetails: expense,
+                              );
+                            }),
+                      );
+                    }
+                  } else if (state is ExpenseError) {
+                    return Center(child: Text('Error: ${state.message}'));
                   } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 8, left: 8, bottom: 100),
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _filteredExpenses.length,
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final expense = _filteredExpenses[index];
-                            return ExpenseCard(
-                              expenseDetails: expense,
-                            );
-                          }),
-                    );
+                    return const Center(child: Text('No splits available.'));
                   }
-                } else if (state is ExpenseError) {
-                  return Center(child: Text('Error: ${state.message}'));
-                } else {
-                  return const Center(child: Text('No splits available.'));
-                }
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

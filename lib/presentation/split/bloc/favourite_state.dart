@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:splitz_bloc/data/models/split_model.dart';
 
 abstract class FavouriteState extends Equatable {
   const FavouriteState();
@@ -18,11 +19,12 @@ class FavouriteSuccess extends FavouriteState {
 }
 
 class FavouriteLoaded extends FavouriteState {
-  const FavouriteLoaded();
+  final SplitModel? favouriteSplit;
+  const FavouriteLoaded(this.favouriteSplit);
 }
 
 class FavouriteFailure extends FavouriteState {
   final String error;
 
-  FavouriteFailure(this.error);
+  const FavouriteFailure(this.error);
 }

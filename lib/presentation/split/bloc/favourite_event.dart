@@ -26,3 +26,5 @@ class CheckFavouriteStatusRequested extends FavouriteEvent {
   @override
   List<Object> get props => [splitId, userId];
 }
+
+class FetchFavouritedSplitRequest extends FavouriteEvent {}

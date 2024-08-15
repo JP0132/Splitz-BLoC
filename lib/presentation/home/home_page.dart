@@ -5,12 +5,19 @@ import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/domain/entities/user.dart';
 import 'package:splitz_bloc/presentation/authentication/bloc/auth_bloc.dart';
 import 'package:splitz_bloc/presentation/authentication/bloc/auth_state.dart';
+import 'package:splitz_bloc/presentation/home/widgets/custom_circular_btn.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_container.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_background.dart';
+import 'package:splitz_bloc/presentation/home/widgets/favourite_placeholder.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
+import 'package:splitz_bloc/presentation/split/add_new_expense.dart';
+import 'package:splitz_bloc/presentation/split/bloc/favourite_bloc.dart';
+import 'package:splitz_bloc/presentation/split/bloc/favourite_event.dart';
+import 'package:splitz_bloc/presentation/split/bloc/favourite_state.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
+import 'package:splitz_bloc/presentation/split/split.dart';
 import 'package:splitz_bloc/utils/constants/colours.dart';
 import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 import 'package:splitz_bloc/widgets/circular_iconbtn.dart';
@@ -25,10 +32,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   User? _user;
+  SplitModel? _favouritedSplit;
 
   @override
   void initState() {
     super.initState();
+    context.read<FavouriteBloc>().add(FetchFavouritedSplitRequest());
     context.read<SplitBloc>().add(FetchAllSplitRequested());
   }
 
@@ -40,6 +49,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Helperfunctions.isDarkMode(context);
+
+    void _addExpenseAction(SplitModel? fav) async {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddNewExpense(splitDetails: fav!),
+        ),
+      );
+
+      if (result) {
+        context.read<FavouriteBloc>().add(FetchFavouritedSplitRequest());
+        context.read<SplitBloc>().add(FetchAllSplitRequested());
+      }
+    }
+
+    void _viewFavouriteDetailsAction(SplitModel? fav) async {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SplitPage(splitDetails: fav!),
+        ),
+      );
+
+      if (result) {
+        context.read<FavouriteBloc>().add(FetchFavouritedSplitRequest());
+        context.read<SplitBloc>().add(FetchAllSplitRequested());
+      }
+    }
 
     SplitModel newCardData = SplitModel(
       id: "1",
@@ -158,13 +195,36 @@ class _HomePageState extends State<HomePage> {
                               CustomColours.darkOnSurface.withOpacity(0.1),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 100.0, right: 8, left: 8),
-                        child: FeaturedSplit(
-                          splitDetails: newCardData,
-                          totalAmount: 0,
-                        ),
+                      BlocBuilder<FavouriteBloc, FavouriteState>(
+                        builder: (context, state) {
+                          if (state is FavouriteLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (state is FavouriteLoaded) {
+                            _favouritedSplit = state.favouriteSplit;
+                            if (_favouritedSplit == null) {
+                              return const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 100.0, right: 8, left: 8),
+                                child: FavouritePlaceholder(),
+                              );
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 100.0, right: 8, left: 8),
+                              child: FeaturedSplit(
+                                splitDetails: _favouritedSplit!,
+                                totalAmount: 0,
+                              ),
+                            );
+                          } else if (state is FavouriteFailure) {
+                            return Center(child: Text('Error: ${state.error}'));
+                          } else {
+                            return const Center(
+                                child: Text('No data available.'));
+                          }
+                        },
                       ),
                       Positioned(
                         top: 300,
@@ -174,20 +234,22 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            CircularIconbtn(
-                              text: "Add Money",
+                            CustomCircularBtn(
                               icon: FontAwesomeIcons.plus,
-                              onPressed: () {},
+                              onTapAction: () =>
+                                  _addExpenseAction(_favouritedSplit),
+                              btnText: "Add Expense",
                             ),
                             CircularIconbtn(
                               text: "Exchange",
                               icon: FontAwesomeIcons.moneyBill,
                               onPressed: () {},
                             ),
-                            CircularIconbtn(
-                              text: "Details",
-                              icon: FontAwesomeIcons.circleInfo,
-                              onPressed: () {},
+                            CustomCircularBtn(
+                              icon: FontAwesomeIcons.info,
+                              onTapAction: () =>
+                                  _viewFavouriteDetailsAction(_favouritedSplit),
+                              btnText: "Details",
                             ),
                           ],
                         ),
