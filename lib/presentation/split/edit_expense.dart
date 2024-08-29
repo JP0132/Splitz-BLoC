@@ -48,7 +48,7 @@ class _EditExpenseState extends State<EditExpense> {
     notesController = TextEditingController(text: widget.expenseDetails.notes);
     selectedType = widget.expenseDetails.type;
     selectedCurrency = widget.expenseDetails.currency;
-    selectedDate = widget.expenseDetails.dateTime;
+    selectedDate = widget.expenseDetails.datePaid;
     addedTags = widget.expenseDetails.tags;
   }
 
@@ -111,7 +111,7 @@ class _EditExpenseState extends State<EditExpense> {
                 ),
                 CustomDatePicker(
                   onDateChanged: handleDateChanged,
-                  dateToEdit: widget.expenseDetails.dateTime,
+                  dateToEdit: widget.expenseDetails.datePaid,
                 ),
                 const SizedBox(
                   height: 16,
@@ -218,7 +218,8 @@ class _EditExpenseState extends State<EditExpense> {
                             currency: selectedCurrency,
                             id: widget.expenseDetails.id,
                             splitId: widget.expenseDetails.splitId,
-                            dateTime: selectedDate,
+                            datePaid: selectedDate,
+                            dateTimeAdded: DateTime.now(),
                             userId: widget.expenseDetails.userId,
                           );
 

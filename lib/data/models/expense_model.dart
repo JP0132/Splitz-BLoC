@@ -9,7 +9,8 @@ class ExpenseModel {
   final double cost;
   final List<String> tags;
   final String notes;
-  final DateTime dateTime;
+  final DateTime dateTimeAdded;
+  final DateTime datePaid;
   final String currency;
   final String userId;
 
@@ -17,7 +18,8 @@ class ExpenseModel {
       {required this.name,
       required this.paid,
       required this.cost,
-      required this.dateTime,
+      required this.dateTimeAdded,
+      required this.datePaid,
       required this.currency,
       required this.tags,
       required this.notes,
@@ -46,7 +48,8 @@ class ExpenseModel {
       type: type ?? this.type,
       cost: cost ?? this.cost,
       paid: paid ?? this.paid,
-      dateTime: dateTime ?? this.dateTime,
+      dateTimeAdded: dateTime ?? this.dateTimeAdded,
+      datePaid: dateTime ?? this.datePaid,
       currency: currency ?? this.currency,
       tags: tags ?? this.tags,
       notes: notes ?? this.notes,
@@ -61,12 +64,13 @@ class ExpenseModel {
       'type': type,
       'cost': cost,
       'paid': paid,
-      'dateTime': dateTime,
+      'dateTimeAdded': dateTimeAdded,
       'currency': currency,
       'tags': tags,
       'notes': notes,
       'splitId': splitId,
       'userId': userId,
+      'datePaid': datePaid,
     };
   }
 
@@ -81,7 +85,9 @@ class ExpenseModel {
               ?.map((tag) => tag as String)
               .toList() ??
           [],
-      dateTime: (map['dateTime'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      dateTimeAdded:
+          (map['dateTimeAdded'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      datePaid: (map['datePaid'] as Timestamp?)?.toDate() ?? DateTime.now(),
       currency: map['currency'] as String? ?? "",
       notes: map['notes'] as String? ?? "",
       splitId: map['splitId'] as String? ?? "",

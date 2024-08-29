@@ -197,7 +197,8 @@ class _AddNewExpenseState extends State<AddNewExpense> {
                               currency: selectedCurrency,
                               id: '',
                               splitId: widget.splitDetails.id,
-                              dateTime: selectedDate,
+                              datePaid: selectedDate,
+                              dateTimeAdded: DateTime.now(),
                               userId: '',
                             );
 

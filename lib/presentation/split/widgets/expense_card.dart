@@ -153,7 +153,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     ),
                     Text(
                       Helperfunctions.getDateFormat(
-                          widget.expenseDetails.dateTime),
+                          widget.expenseDetails.datePaid),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
