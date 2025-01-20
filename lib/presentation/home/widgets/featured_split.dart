@@ -61,22 +61,22 @@ class _FeaturedSplitState extends State<FeaturedSplit> {
               ),
               Text(
                 "${Helperfunctions.getCurrencyFormat(widget.splitDetails.currency)}${widget.splitDetails.totalAmount}",
-                style: TextStyle(color: Colors.white, fontSize: 25),
+                style: const TextStyle(color: Colors.white, fontSize: 25),
               ),
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 4),
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 4),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       widget.splitDetails.name,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     Text(
                       Helperfunctions.getDateFormat(
                           widget.splitDetails.dateTime),
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
