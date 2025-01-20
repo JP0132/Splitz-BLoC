@@ -33,7 +33,7 @@ class _HomeFeaturedCardState extends State<HomeFeaturedCard> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(15.0),
               child: Text(widget.text),
             ),
             ConstrainedBox(
@@ -61,7 +61,10 @@ class _HomeFeaturedCardState extends State<HomeFeaturedCard> {
                                 Icon(Helperfunctions.getIconByName(data.icon)),
                           ),
                         ),
-                        title: Text(data.name),
+                        title: Text(
+                          data.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         subtitle: Text("\$${data.value.toString()}"),
                         trailing: Text(
                           Helperfunctions.getDateFormat(data.dateCreated),
