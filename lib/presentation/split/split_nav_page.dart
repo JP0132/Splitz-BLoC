@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
 import 'package:splitz_bloc/presentation/split/bloc/expense_bloc.dart';
@@ -28,6 +27,7 @@ class SplitNavPage extends StatefulWidget {
 class _SplitNavPageState extends State<SplitNavPage> {
   final TextEditingController _searchController = TextEditingController();
   final ValueNotifier<List<SplitModel>> _filteredSplitsNotifier = ValueNotifier([]);
+  
   bool _refreshed = false; // Flag to check if data has been refreshed
   List<SplitModel> _splits = [];
   List<ExpenseModel> _expenses = [];
@@ -110,6 +110,10 @@ class _SplitNavPageState extends State<SplitNavPage> {
                     ),
                   ),
                 ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.filter_list, color: Colors.white),
+                ),
               ],
             ),
           ),
@@ -157,14 +161,16 @@ class _SplitNavPageState extends State<SplitNavPage> {
                             // Splits List - used flexible to ensure renderflex error is avoided
                             Flexible(
                               fit: FlexFit.loose,
-                              child: ListView.builder(
-                                itemCount: filteredSplits.length,
-                                itemBuilder: (context, index) {
-                                  return SplitCard(
-                                    split: filteredSplits[index],
-                                    onCardTap: _refreshData,
-                                  );
-                                },
+                              child: SlidableAutoCloseBehavior(
+                                child: ListView.builder(
+                                  itemCount: filteredSplits.length,
+                                  itemBuilder: (context, index) {
+                                    return SplitCard(
+                                      split: filteredSplits[index],
+                                      onCardTap: _refreshData,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ],
