@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:splitz_bloc/data/models/expense_model.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
 import 'package:splitz_bloc/data/models/split_model.dart';
@@ -205,17 +207,19 @@ class _SplitPageState extends State<SplitPage> {
                       return Padding(
                         padding: const EdgeInsets.only(
                             top: 8, right: 8, left: 8, bottom: 100),
-                        child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _filteredExpenses.length,
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final expense = _filteredExpenses[index];
-                              return ExpenseCard(
-                                expenseDetails: expense,
-                              );
-                            }),
+                        child: SlidableAutoCloseBehavior(
+                          child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: _filteredExpenses.length,
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final expense = _filteredExpenses[index];
+                                return ExpenseCard(
+                                  expenseDetails: expense,
+                                );
+                              }),
+                        ),
                       );
                     }
                   } else if (state is ExpenseError) {
