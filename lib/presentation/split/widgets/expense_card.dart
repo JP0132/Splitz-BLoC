@@ -65,7 +65,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text("Delete Split?"),
+                        title: const Text("Delete Expense?"),
                         content: const Text(
                           "Are you sure you want to delete this expense, this action is irversiable",
                         ),
@@ -118,12 +118,12 @@ class _ExpenseCardState extends State<ExpenseCard> {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text("Notes"),
+                  title: const Text("Notes"),
                   content: Text(widget.expenseDetails.notes),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 ),
@@ -131,7 +131,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             }
           },
           child: Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: isDark
@@ -170,7 +170,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     ),
                     Text(
                       'Paid: ${Helperfunctions.getCurrencyFormat(widget.expenseDetails.currency)}${widget.expenseDetails.paid}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     ),
