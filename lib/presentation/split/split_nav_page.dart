@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -19,24 +20,34 @@ class SplitNavPage extends StatefulWidget {
   State<SplitNavPage> createState() => _SplitNavPageState();
 }
 
-// TODO: Close the previous sliders when a new one is opened
+// DONE: Close the previous sliders when a new one is opened
 // DONE: Refersh the stats / recompute the stats when split is updated on callback
 // TODO: Add filter
 // TODO: Change UI layout
+// DONE: Update the data after deleting a split
+
+// Note: When using the DropdownSearch widget from the library, if error for hittestbehavior is thrown,
+// change the version of the dropdown_search package or
+// remove or comment out the hitTestBehavior parameter in the files causing the error.
 
 class _SplitNavPageState extends State<SplitNavPage> {
   final TextEditingController _searchController = TextEditingController();
-  final ValueNotifier<List<SplitModel>> _filteredSplitsNotifier = ValueNotifier([]);
-  
+  final ValueNotifier<List<SplitModel>> _filteredSplitsNotifier =
+      ValueNotifier([]);
+
   bool _refreshed = false; // Flag to check if data has been refreshed
   List<SplitModel> _splits = [];
   List<ExpenseModel> _expenses = [];
   List<Map<String, dynamic>> _stats = [];
 
+  String _selectedFilter = 'All';
+
+  final dropDownKey = GlobalKey<DropdownSearchState>();
+
   @override
   void initState() {
     super.initState();
-    
+
     // Fetching the splits and expenses
     context.read<SplitBloc>().add(FetchAllSplitRequested());
     context.read<ExpenseBloc>().add(FetchAllUsersExpensesRequested());
@@ -50,6 +61,16 @@ class _SplitNavPageState extends State<SplitNavPage> {
     context.read<SplitBloc>().add(FetchAllSplitRequested());
     context.read<ExpenseBloc>().add(FetchAllUsersExpensesRequested());
     _refreshed = true;
+  }
+
+  void _deleteSplit(String splitId) {
+    // Remove the split data from the lists
+    _splits.removeWhere((split) => split.id == splitId);
+    _expenses.removeWhere((expense) => expense.splitId == splitId);
+    
+    // Recompute stats after deletion
+    _refreshed = true;
+    _computeStats(_expenses);
   }
 
   void _onSearchChanged() {
@@ -110,9 +131,32 @@ class _SplitNavPageState extends State<SplitNavPage> {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.filter_list, color: Colors.white),
+                // Filter Icon Button
+                DropdownSearch<(String, Color)>(
+                  clickProps:
+                      ClickProps(borderRadius: BorderRadius.circular(20)),
+                  mode: Mode.custom,
+                  items: (f, cs) => [
+                    ("All", Colors.white),
+                    ("Least to Most", Colors.white),
+                    ("Most to Least", Colors.white),
+                    ('Date Added', Colors.white),
+                  ],
+                  compareFn: (item1, item2) => item1.$1 == item2.$2,
+                  popupProps: PopupProps.menu(
+                    menuProps: const MenuProps(align: MenuAlign.bottomCenter),
+                    fit: FlexFit.loose,
+                    itemBuilder: (context, item, isDisabled, isSelected) =>
+                        Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(item.$1,
+                          style: TextStyle(color: item.$2, fontSize: 16)),
+                    ),
+                  ),
+                  dropdownBuilder: (ctx, selectedItem) => Icon(
+                      Icons.filter_list,
+                      color: selectedItem?.$2,
+                      size: 30),
                 ),
               ],
             ),
@@ -153,6 +197,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
                       if (filteredSplits.isEmpty) {
                         return const Center(child: Text("No Splits found"));
                       } else {
+                        _refreshed = true;
                         _computeStats(_expenses);
 
                         return Column(
@@ -168,6 +213,7 @@ class _SplitNavPageState extends State<SplitNavPage> {
                                     return SplitCard(
                                       split: filteredSplits[index],
                                       onCardTap: _refreshData,
+                                      onDelete: _deleteSplit,
                                     );
                                   },
                                 ),
@@ -194,18 +240,21 @@ class _SplitNavPageState extends State<SplitNavPage> {
   void _computeStats(List<ExpenseModel> expenses) {
     // Only compute stats if they haven't been computed yet or if the data has been refreshed
     if (_stats.isEmpty || _refreshed) {
-
+      print("YO AM COMPUTING");
       // Set the refreshed flag to false
       _refreshed = false;
 
       // Getting the total spent of the combined values of the splits
-      double totalSpent = _splits.fold(0.0, (sum, split) => sum + split.totalAmount);
+      double totalSpent =
+          _splits.fold(0.0, (sum, split) => sum + split.totalAmount);
 
       // Get the most expensive split
-      SplitModel? mostExpensiveSplit = _splits.isNotEmpty ? _splits.first : null;
+      SplitModel? mostExpensiveSplit =
+          _splits.isNotEmpty ? _splits.first : null;
 
       // Get the most expensive expense
-      ExpenseModel? mostExpensiveExpense = expenses.isNotEmpty ? expenses.first : null;
+      ExpenseModel? mostExpensiveExpense =
+          expenses.isNotEmpty ? expenses.first : null;
 
       // Map to store the counts of each tag
       Map<String, int> tagCounter = {};
@@ -228,7 +277,8 @@ class _SplitNavPageState extends State<SplitNavPage> {
 
       // Take the first 3 tags from sortedTags, map only the string value.
       // Add it to the list
-      List<String> popularTags = sortedTags.take(3).map((entry) => entry.key).toList();
+      List<String> popularTags =
+          sortedTags.take(3).map((entry) => entry.key).toList();
 
       // Get the most expensive split
       for (SplitModel split in _splits) {
@@ -279,7 +329,8 @@ class _SplitNavPageState extends State<SplitNavPage> {
         },
         {
           'title': 'Most Expensive Split',
-          'value': "${mostExpensiveSplit?.name}: ${mostExpensiveSplit?.totalAmount}",
+          'value':
+              "${mostExpensiveSplit?.name}: ${mostExpensiveSplit?.totalAmount}",
           'color': Colors.teal,
           'icon': Icons.show_chart
         },

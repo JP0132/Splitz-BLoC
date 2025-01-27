@@ -12,12 +12,14 @@ import 'package:splitz_bloc/utils/helper/helper_functions.dart';
 class SplitCard extends StatefulWidget {
   final VoidCallback onCardTap; // Callback function
   final SplitModel split;
+  final Function onDelete;
   
 
   const SplitCard({
     super.key,
     required this.split,
     required this.onCardTap,
+    required this.onDelete,
   });
 
   @override
@@ -86,7 +88,9 @@ class _SplitCardState extends State<SplitCard> {
                                           Text('Split deleted successfully!'),
                                       backgroundColor: Colors.green,
                                     ));
+                                    widget.onDelete(widget.split.id);
                                     Navigator.pop(context);
+                                    
                                   },
                                   child: const Text(
                                     "DELETE",
