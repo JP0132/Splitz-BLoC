@@ -22,7 +22,8 @@ class SplitNavPage extends StatefulWidget {
 
 // DONE: Close the previous sliders when a new one is opened
 // DONE: Refersh the stats / recompute the stats when split is updated on callback
-// TODO: Add filter
+// DONE: Filter from dropdown works
+// TODO: Filter dropdown change UI of selected Item
 // TODO: Change UI layout
 // DONE: Update the data after deleting a split
 
@@ -39,6 +40,13 @@ class _SplitNavPageState extends State<SplitNavPage> {
   List<SplitModel> _splits = [];
   List<ExpenseModel> _expenses = [];
   List<Map<String, dynamic>> _stats = [];
+
+  List<String> _filters = [
+    'All',
+    'Least to Most',
+    'Most to Least',
+    'Date Added'
+  ];
 
   String _selectedFilter = 'All';
 
@@ -61,13 +69,14 @@ class _SplitNavPageState extends State<SplitNavPage> {
     context.read<SplitBloc>().add(FetchAllSplitRequested());
     context.read<ExpenseBloc>().add(FetchAllUsersExpensesRequested());
     _refreshed = true;
+    FocusScope.of(context).unfocus();
   }
 
   void _deleteSplit(String splitId) {
     // Remove the split data from the lists
     _splits.removeWhere((split) => split.id == splitId);
     _expenses.removeWhere((expense) => expense.splitId == splitId);
-    
+
     // Recompute stats after deletion
     _refreshed = true;
     _computeStats(_expenses);
@@ -76,6 +85,31 @@ class _SplitNavPageState extends State<SplitNavPage> {
   void _onSearchChanged() {
     // No need to call setState here
     _filterSplits();
+  }
+
+  void _applyFilter() {
+    // Apply the selected filter
+    List<SplitModel> filteredSplits = _splits;
+
+    switch (_selectedFilter) {
+      case 'Least to Most':
+        filteredSplits.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
+        break;
+      case 'Most to Least':
+        filteredSplits.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
+        break;
+      case 'Date Ascending':
+        filteredSplits.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+        break;
+      case 'Date Descending':
+        filteredSplits.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+        break;
+      default:
+        filteredSplits = _splits;
+        break;
+    }
+
+    _filteredSplitsNotifier.value = filteredSplits;
   }
 
   // Filter the splits based on the search query
@@ -104,135 +138,188 @@ class _SplitNavPageState extends State<SplitNavPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Splits'),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: "Search",
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ),
-                // Filter Icon Button
-                DropdownSearch<(String, Color)>(
-                  clickProps:
-                      ClickProps(borderRadius: BorderRadius.circular(20)),
-                  mode: Mode.custom,
-                  items: (f, cs) => [
-                    ("All", Colors.white),
-                    ("Least to Most", Colors.white),
-                    ("Most to Least", Colors.white),
-                    ('Date Added', Colors.white),
-                  ],
-                  compareFn: (item1, item2) => item1.$1 == item2.$2,
-                  popupProps: PopupProps.menu(
-                    menuProps: const MenuProps(align: MenuAlign.bottomCenter),
-                    fit: FlexFit.loose,
-                    itemBuilder: (context, item, isDisabled, isSelected) =>
-                        Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(item.$1,
-                          style: TextStyle(color: item.$2, fontSize: 16)),
-                    ),
-                  ),
-                  dropdownBuilder: (ctx, selectedItem) => Icon(
-                      Icons.filter_list,
-                      color: selectedItem?.$2,
-                      size: 30),
-                ),
-              ],
-            ),
-          ),
-
-          // Stat Cards (Separate BlocBuilder)
-          BlocBuilder<ExpenseBloc, ExpenseState>(
-            builder: (context, expenseState) {
-              if (expenseState is ExpenseLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (expenseState is ExpensesLoaded) {
-                _expenses = expenseState.expenses;
-                return const SizedBox();
-              } else if (expenseState is ExpenseError) {
-                return Center(child: Text('Error: ${expenseState.message}'));
-              } else {
-                return const Center(child: Text('No expenses available.'));
-              }
-            },
-          ),
-
-          // Splits List (Separate BlocBuilder)
-          Expanded(
-            child: BlocBuilder<SplitBloc, SplitState>(
-              builder: (context, state) {
-                if (state is SplitLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is SplitsLoaded) {
-                  _splits = state.splits;
-                  _filterSplits(); // Update the filtered splits
-                  return ValueListenableBuilder<List<SplitModel>>(
-                    valueListenable: _filteredSplitsNotifier,
-                    builder: (context, filteredSplits, _) {
-                      if (filteredSplits.isEmpty) {
-                        return const Center(child: Text("No Splits found"));
-                      } else {
-                        _refreshed = true;
-                        _computeStats(_expenses);
-
-                        return Column(
+    return GestureDetector(
+     onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Your Splits'),
+          centerTitle: true,
+        ),
+        body: Column(
+          children: [
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    // Search Bar
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color:
+                              Colors.grey[900], // Background color for search box
+                          borderRadius:
+                              BorderRadius.circular(20), // Rounded corners
+                        ),
+                        child: Row(
                           children: [
-                            StatCardsLayoutWidget(stats: _stats),
-                            // Splits List - used flexible to ensure renderflex error is avoided
-                            Flexible(
-                              fit: FlexFit.loose,
-                              child: SlidableAutoCloseBehavior(
-                                child: ListView.builder(
-                                  itemCount: filteredSplits.length,
-                                  itemBuilder: (context, index) {
-                                    return SplitCard(
-                                      split: filteredSplits[index],
-                                      onCardTap: _refreshData,
-                                      onDelete: _deleteSplit,
-                                    );
-                                  },
+                            const Icon(
+                              Icons.search,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              // Ensures TextField is constrained properly
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: const InputDecoration(
+                                  hintText: "Search",
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(
+                                      fontSize: 14, color: Colors.white70),
                                 ),
+                                style: const TextStyle(
+                                    color: Colors.white), // Text color
                               ),
                             ),
                           ],
-                        );
-                      }
-                    },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    // Filter Icon Button
+                    DropdownSearch<String>(
+                      clickProps:
+                          ClickProps(borderRadius: BorderRadius.circular(20)),
+                      mode: Mode.custom,
+                      items: (f, cs) => [
+                        'All',
+                        'Least to Most',
+                        'Most to Least',
+                        'Date Ascending',
+                        "Date Descending"
+                      ],
+                      popupProps: PopupProps.menu(
+                        menuProps:
+                            const MenuProps(align: MenuAlign.bottomCenter),
+                        fit: FlexFit.loose,
+                        itemBuilder: (context, item, isDisabled, isSelected) =>
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.blue
+                                    : Colors.white, // Change color if selected
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                item,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal, // Highlight selected
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.blue, // Change color if selected
+                                ),
+                              ),
+                            ),
+                      ),
+                      dropdownBuilder: (ctx, selectedItem) =>
+                          const Icon(Icons.filter_list, size: 40),
+                      selectedItem: _selectedFilter,
+                      onChanged: (newFilter) {
+                        setState(() {
+                          _selectedFilter =
+                              newFilter ?? "All"; // Update selected filter
+                          // Apply the selected filter
+                          _applyFilter();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Stat Cards (Separate BlocBuilder)
+            BlocBuilder<ExpenseBloc, ExpenseState>(
+              builder: (context, expenseState) {
+                if (expenseState is ExpenseLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                } else if (state is SplitError) {
-                  return Center(child: Text('Error: ${state.message}'));
+                } else if (expenseState is ExpensesLoaded) {
+                  _expenses = expenseState.expenses;
+                  return const SizedBox();
+                } else if (expenseState is ExpenseError) {
+                  return Center(child: Text('Error: ${expenseState.message}'));
                 } else {
-                  return const Center(child: Text('No splits available.'));
+                  return const Center(child: Text('No expenses available.'));
                 }
               },
             ),
-          ),
-        ],
+
+            // Splits List (Separate BlocBuilder)
+            Expanded(
+              child: BlocBuilder<SplitBloc, SplitState>(
+                builder: (context, state) {
+                  if (state is SplitLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is SplitsLoaded) {
+                    _splits = state.splits;
+                    _filterSplits(); // Update the filtered splits
+                    return ValueListenableBuilder<List<SplitModel>>(
+                      valueListenable: _filteredSplitsNotifier,
+                      builder: (context, filteredSplits, _) {
+                        if (filteredSplits.isEmpty) {
+                          return const Center(child: Text("No Splits found"));
+                        } else {
+                          _refreshed = true;
+                          _computeStats(_expenses);
+
+                          return Column(
+                            children: [
+                              StatCardsLayoutWidget(stats: _stats),
+                              // Splits List - used flexible to ensure renderflex error is avoided
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: SlidableAutoCloseBehavior(
+                                  child: ListView.builder(
+                                    itemCount: filteredSplits.length,
+                                    itemBuilder: (context, index) {
+                                      return SplitCard(
+                                        split: filteredSplits[index],
+                                        onCardTap: _refreshData,
+                                        onDelete: _deleteSplit,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    );
+                  } else if (state is SplitError) {
+                    return Center(child: Text('Error: ${state.message}'));
+                  } else {
+                    return const Center(child: Text('No splits available.'));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
