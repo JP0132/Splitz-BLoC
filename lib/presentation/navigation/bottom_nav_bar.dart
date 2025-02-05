@@ -7,6 +7,7 @@ import 'package:splitz_bloc/presentation/navigation/bloc/navigation_bloc.dart';
 import 'package:splitz_bloc/presentation/navigation/bloc/navigation_event.dart';
 import 'package:splitz_bloc/presentation/navigation/bloc/navigation_state.dart';
 import 'package:splitz_bloc/presentation/home/home_page.dart';
+import 'package:splitz_bloc/presentation/settings/settings_page.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_bloc.dart';
 import 'package:splitz_bloc/presentation/split/bloc/split_event.dart';
 import 'package:splitz_bloc/presentation/split/create_new_split.dart';
@@ -107,7 +108,7 @@ class CustomBottomNavbar extends StatelessWidget {
             } else if (state is AnalyticsState) {
               return Container(color: Colors.orange);
             } else if (state is SettingsState) {
-              return Container(color: Colors.indigo);
+              return const SettingsPage();
             } else {
               return Container();
             }

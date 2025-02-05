@@ -192,57 +192,59 @@ class _SplitNavPageState extends State<SplitNavPage> {
 
                     const SizedBox(width: 10),
 
-                    // Filter Icon Button
-                    DropdownSearch<String>(
-                      clickProps:
-                          ClickProps(borderRadius: BorderRadius.circular(20)),
-                      mode: Mode.custom,
-                      items: (f, cs) => [
-                        'All',
-                        'Least to Most',
-                        'Most to Least',
-                        'Date Ascending',
-                        "Date Descending"
-                      ],
-                      popupProps: PopupProps.menu(
-                        menuProps:
-                            const MenuProps(align: MenuAlign.bottomCenter),
-                        fit: FlexFit.loose,
-                        itemBuilder: (context, item, isDisabled, isSelected) =>
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.blue
-                                    : Colors.white, // Change color if selected
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                item,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal, // Highlight selected
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.blue, // Change color if selected
-                                ),
-                              ),
-                            ),
-                      ),
-                      dropdownBuilder: (ctx, selectedItem) =>
-                          const Icon(Icons.filter_list, size: 40),
-                      selectedItem: _selectedFilter,
-                      onChanged: (newFilter) {
-                        setState(() {
-                          _selectedFilter =
-                              newFilter ?? "All"; // Update selected filter
-                          // Apply the selected filter
-                          _applyFilter();
-                        });
-                      },
-                    ),
+                    
+
+                    // // Filter Icon Button
+                    // DropdownSearch<String>(
+                    //   clickProps:
+                    //       ClickProps(borderRadius: BorderRadius.circular(20)),
+                    //   mode: Mode.custom,
+                    //   items: (f, cs) => [
+                    //     'All',
+                    //     'Least to Most',
+                    //     'Most to Least',
+                    //     'Date Ascending',
+                    //     "Date Descending"
+                    //   ],
+                    //   popupProps: PopupProps.menu(
+                    //     menuProps:
+                    //         const MenuProps(align: MenuAlign.bottomCenter),
+                    //     fit: FlexFit.loose,
+                    //     itemBuilder: (context, item, isDisabled, isSelected) =>
+                    //         Container(
+                    //           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    //           decoration: BoxDecoration(
+                    //             color: isSelected
+                    //                 ? Colors.blue
+                    //                 : Colors.white, // Change color if selected
+                    //             borderRadius: BorderRadius.circular(20),
+                    //           ),
+                    //           child: Text(
+                    //             item,
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //               fontWeight: isSelected
+                    //                   ? FontWeight.bold
+                    //                   : FontWeight.normal, // Highlight selected
+                    //               color: isSelected
+                    //                   ? Colors.white
+                    //                   : Colors.blue, // Change color if selected
+                    //             ),
+                    //           ),
+                    //         ),
+                    //   ),
+                    //   dropdownBuilder: (ctx, selectedItem) =>
+                    //       const Icon(Icons.filter_list, size: 40),
+                    //   selectedItem: _selectedFilter,
+                    //   onChanged: (newFilter) {
+                    //     setState(() {
+                    //       _selectedFilter =
+                    //           newFilter ?? "All"; // Update selected filter
+                    //       // Apply the selected filter
+                    //       _applyFilter();
+                    //     });
+                    //   },
+                    // ),
                   ],
                 ),
               ),
