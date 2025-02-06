@@ -10,6 +10,7 @@ import 'package:splitz_bloc/presentation/authentication/bloc/auth_state.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_btn.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_container.dart';
 import 'package:splitz_bloc/presentation/home/widgets/custom_circular_background.dart';
+import 'package:splitz_bloc/presentation/home/widgets/expenses_featured_card.dart';
 import 'package:splitz_bloc/presentation/home/widgets/favourite_placeholder.dart';
 import 'package:splitz_bloc/presentation/home/widgets/featured_split.dart';
 import 'package:splitz_bloc/presentation/home/widgets/home_featured_card.dart';
@@ -364,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                 dataList: _lastThreeSplits(state.splits),
                 text: "Latest Splits",
               ),
-              HomeFeaturedCard(
+              ExpensesFeaturedCard(
                 dataList: _lastThreeExpensesAdded(expenses),
                 text: "Latest Expense Added",
               ),
