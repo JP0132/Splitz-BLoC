@@ -13,7 +13,6 @@ class SplitCard extends StatefulWidget {
   final VoidCallback onCardTap; // Callback function
   final SplitModel split;
   final Function onDelete;
-  
 
   const SplitCard({
     super.key,
@@ -27,7 +26,6 @@ class SplitCard extends StatefulWidget {
 }
 
 class _SplitCardState extends State<SplitCard> {
-
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -37,7 +35,6 @@ class _SplitCardState extends State<SplitCard> {
         motion: const ScrollMotion(),
         children: [
           Builder(builder: (cont) {
-            
             return ElevatedButton(
                 onPressed: () async {
                   Slidable.of(cont)!.close();
@@ -67,37 +64,38 @@ class _SplitCardState extends State<SplitCard> {
             return ElevatedButton(
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title: const Text("Delete Split?"),
-                            content: const Text(
-                              "Are you sure you want to delete this split, this action is irreversible",
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    context.read<SplitBloc>().add(
-                                        DeleteSplitRequested(widget.split.id));
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content:
-                                          Text('Split deleted successfully!'),
-                                      backgroundColor: Colors.green,
-                                    ));
-                                    widget.onDelete(widget.split.id);
-                                    Navigator.pop(context);
-                                    
-                                  },
-                                  child: const Text(
-                                    "DELETE",
-                                    style: TextStyle(color: Colors.red),
-                                  ))
-                            ],
-                          ));
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Delete Split?"),
+                      content: const Text(
+                        "Are you sure you want to delete this split, this action is irreversible",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            context
+                                .read<SplitBloc>()
+                                .add(DeleteSplitRequested(widget.split.id));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text('Split deleted successfully!'),
+                              backgroundColor: Colors.green,
+                            ));
+                            widget.onDelete(widget.split.id);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "DELETE",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),

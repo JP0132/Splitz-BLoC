@@ -51,6 +51,16 @@ class Helperfunctions {
     return DateFormat('yyyy-MM-dd').format(currentDate);
   }
 
+  static String getTextDateFormat(DateTime date) {
+    // Extract the date and reformat it
+    DateTime currentDate = DateTime(
+      date.year,
+      date.month,
+      date.day,
+    );
+    return DateFormat('dd-MMM-yyyy').format(currentDate);
+  }
+
   static String getCurrencyFormat(String currency) {
     for (var item in CustomValues.currencies) {
       if (item.name == currency) {
