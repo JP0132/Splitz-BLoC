@@ -13,6 +13,18 @@ import 'package:splitz_bloc/presentation/split/bloc/split_state.dart';
 import 'package:splitz_bloc/presentation/split/widgets/split_card.dart';
 import 'package:splitz_bloc/presentation/split/widgets/stat_card.dart';
 
+
+enum FilterOptions {
+  all('All'),
+  leastToMost('Least to Most'),
+  mostToLeast('Most to Least'),
+  dateAscending('Date Ascending'),
+  dateDescending('Date Descending');
+
+  const FilterOptions(this.value);
+  final String value;
+}
+
 class SplitNavPage extends StatefulWidget {
   const SplitNavPage({super.key});
 
@@ -41,14 +53,19 @@ class _SplitNavPageState extends State<SplitNavPage> {
   List<ExpenseModel> _expenses = [];
   List<Map<String, dynamic>> _stats = [];
 
+
   List<String> _filters = [
     'All',
     'Least to Most',
     'Most to Least',
-    'Date Added'
+    'Date Ascending',
+    'Date Descending'
   ];
 
-  String _selectedFilter = 'All';
+
+  FilterOptions? _selectedItem;
+
+  String? _selectedFilter = 'All';
 
   final dropDownKey = GlobalKey<DropdownSearchState>();
 
@@ -91,17 +108,17 @@ class _SplitNavPageState extends State<SplitNavPage> {
     // Apply the selected filter
     List<SplitModel> filteredSplits = _splits;
 
-    switch (_selectedFilter) {
-      case 'Least to Most':
+    switch (_selectedItem) {
+      case FilterOptions.leastToMost:
         filteredSplits.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
         break;
-      case 'Most to Least':
+      case FilterOptions.mostToLeast:
         filteredSplits.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
         break;
-      case 'Date Ascending':
+      case FilterOptions.dateAscending:
         filteredSplits.sort((a, b) => a.dateTime.compareTo(b.dateTime));
         break;
-      case 'Date Descending':
+      case FilterOptions.dateDescending:
         filteredSplits.sort((a, b) => b.dateTime.compareTo(a.dateTime));
         break;
       default:
@@ -192,59 +209,24 @@ class _SplitNavPageState extends State<SplitNavPage> {
 
                     const SizedBox(width: 10),
 
-                    
-
-                    // // Filter Icon Button
-                    // DropdownSearch<String>(
-                    //   clickProps:
-                    //       ClickProps(borderRadius: BorderRadius.circular(20)),
-                    //   mode: Mode.custom,
-                    //   items: (f, cs) => [
-                    //     'All',
-                    //     'Least to Most',
-                    //     'Most to Least',
-                    //     'Date Ascending',
-                    //     "Date Descending"
-                    //   ],
-                    //   popupProps: PopupProps.menu(
-                    //     menuProps:
-                    //         const MenuProps(align: MenuAlign.bottomCenter),
-                    //     fit: FlexFit.loose,
-                    //     itemBuilder: (context, item, isDisabled, isSelected) =>
-                    //         Container(
-                    //           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    //           decoration: BoxDecoration(
-                    //             color: isSelected
-                    //                 ? Colors.blue
-                    //                 : Colors.white, // Change color if selected
-                    //             borderRadius: BorderRadius.circular(20),
-                    //           ),
-                    //           child: Text(
-                    //             item,
-                    //             style: TextStyle(
-                    //               fontSize: 16,
-                    //               fontWeight: isSelected
-                    //                   ? FontWeight.bold
-                    //                   : FontWeight.normal, // Highlight selected
-                    //               color: isSelected
-                    //                   ? Colors.white
-                    //                   : Colors.blue, // Change color if selected
-                    //             ),
-                    //           ),
-                    //         ),
-                    //   ),
-                    //   dropdownBuilder: (ctx, selectedItem) =>
-                    //       const Icon(Icons.filter_list, size: 40),
-                    //   selectedItem: _selectedFilter,
-                    //   onChanged: (newFilter) {
-                    //     setState(() {
-                    //       _selectedFilter =
-                    //           newFilter ?? "All"; // Update selected filter
-                    //       // Apply the selected filter
-                    //       _applyFilter();
-                    //     });
-                    //   },
-                    // ),
+                    // Filter Icon Button
+                    PopupMenuButton<FilterOptions>(
+                      initialValue: _selectedItem,
+                      onSelected: (FilterOptions item){
+                        setState(() {
+                          _selectedItem = item;
+                          _applyFilter();
+                        });
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return FilterOptions.values.map((FilterOptions option) {
+                          return PopupMenuItem<FilterOptions>(
+                            value: option,
+                            child: Text(option.value),
+                          );
+                        }).toList();
+                      },
+                    )
                   ],
                 ),
               ),
